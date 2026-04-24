@@ -97,7 +97,7 @@ export default function HUD({ slides, slideIndex, step, onNext, onPrev, onRestar
                 {[
                   ['→ · Space · Enter', 'Next build / next slide'],
                   ['← · Backspace', 'Previous build / previous slide'],
-                  ['1-5', 'Jump directly to slide'],
+                  ['1-6', 'Jump directly to slide'],
                   ['Home · End', 'First / last slide'],
                   ['R', 'Restart current slide'],
                   ['F', 'Fill (reveal all builds)'],

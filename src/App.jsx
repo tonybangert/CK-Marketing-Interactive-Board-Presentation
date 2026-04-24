@@ -4,6 +4,7 @@ import Slide1 from './slides/Slide1.jsx'
 import Slide2 from './slides/Slide2.jsx'
 import Slide3 from './slides/Slide3.jsx'
 import Slide4 from './slides/Slide4.jsx'
+import Slide5 from './slides/Slide5.jsx'
 import DeckFooter from './components/DeckFooter.jsx'
 import HUD from './components/HUD.jsx'
 import { useDeckState } from './hooks/useDeckState.js'
@@ -11,10 +12,11 @@ import { deck } from './data.js'
 
 const SLIDES = [
   { id: 0, label: 'Two legacies, one company', component: Slide0, steps: 1, hideFooter: true },
-  { id: 1, label: 'How we did it',              component: Slide1, steps: 4 },
+  { id: 1, label: 'How we did it',              component: Slide1, steps: 5 },
   { id: 2, label: 'What it told us',            component: Slide2, steps: 6 },
   { id: 3, label: 'How we make it actionable',  component: Slide3, steps: 6 },
-  { id: 4, label: 'What comes next',            component: Slide4, steps: 6 }
+  { id: 4, label: 'What comes next',            component: Slide4, steps: 6 },
+  { id: 5, label: 'Thank you',                  component: Slide5, steps: 1, hideFooter: true }
 ]
 
 const slideVariants = {
