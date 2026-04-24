@@ -7,16 +7,17 @@ import Slide4 from './slides/Slide4.jsx'
 import Slide5 from './slides/Slide5.jsx'
 import DeckFooter from './components/DeckFooter.jsx'
 import HUD from './components/HUD.jsx'
+import DataSpineChrome from './components/DataSpineChrome.jsx'
 import { useDeckState } from './hooks/useDeckState.js'
 import { deck } from './data.js'
 
 const SLIDES = [
-  { id: 0, label: 'Two legacies, one company', component: Slide0, steps: 1, hideFooter: true },
-  { id: 1, label: 'How we did it',              component: Slide1, steps: 5 },
+  { id: 0, label: 'Two legacies, one company', component: Slide0, steps: 1, hideFooter: true, hideSpine: true },
+  { id: 1, label: 'How we did it',              component: Slide1, steps: 5, showSpine: true },
   { id: 2, label: 'What it told us',            component: Slide2, steps: 6 },
   { id: 3, label: 'How we make it actionable',  component: Slide3, steps: 6 },
   { id: 4, label: 'What comes next',            component: Slide4, steps: 6 },
-  { id: 5, label: 'Thank you',                  component: Slide5, steps: 1, hideFooter: true }
+  { id: 5, label: 'Thank you',                  component: Slide5, steps: 1, hideFooter: true, hideSpine: true }
 ]
 
 const slideVariants = {
@@ -79,6 +80,13 @@ export default function App() {
             )}
           </motion.div>
         </AnimatePresence>
+
+        {/* DataSpine chrome: only appears on Slide 1, which is "how the data comes together".
+            It's the proof for that slide's arc; subsequent slides use the canvas fully. */}
+        <DataSpineChrome
+          visible={!!SLIDES[slideIndex].showSpine}
+          introPlayed={!!SLIDES[slideIndex].showSpine}
+        />
       </div>
 
       <HUD
