@@ -53,7 +53,7 @@ export default function RevenueIntelligenceDashboard({ revealed, cycleChips }) {
           )
         })}
         <div className="flex-1" />
-        <div className="text-[9px] text-[#5A6B7D] font-semibold">Tony</div>
+        <div className="text-[9px] text-[#5A6B7D] font-semibold">Kevin</div>
       </div>
 
       {/* Sub-header row */}
@@ -120,7 +120,7 @@ export default function RevenueIntelligenceDashboard({ revealed, cycleChips }) {
               Good afternoon
             </div>
             <div className="font-bold text-[36px] leading-none mt-2 tracking-tight">
-              Hello, Tony.
+              Hello, Kevin.
             </div>
             <div className="text-[13px] text-white/65 mt-2 max-w-[360px]">
               Here's what your HubSpot data is telling you about your best customers
