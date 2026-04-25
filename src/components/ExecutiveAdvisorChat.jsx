@@ -95,7 +95,7 @@ export default function ExecutiveAdvisorChat({ revealed, typing }) {
                 className="h-7 w-7 rounded-full flex items-center justify-center shrink-0"
                 style={{ background: '#EFF7FF', border: '1px solid #D6E8FA' }}
               >
-                <span className="text-[11px] font-bold text-[#1E9FFF]">T</span>
+                <span className="text-[11px] font-bold text-[#1E9FFF]">K</span>
               </div>
             </motion.div>
           )}
@@ -148,7 +148,7 @@ export default function ExecutiveAdvisorChat({ revealed, typing }) {
                 className="h-7 w-7 rounded-full flex items-center justify-center shrink-0"
                 style={{ background: '#EFF7FF', border: '1px solid #D6E8FA' }}
               >
-                <span className="text-[11px] font-bold text-[#1E9FFF]">T</span>
+                <span className="text-[11px] font-bold text-[#1E9FFF]">K</span>
               </div>
             </motion.div>
           )}
