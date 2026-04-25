@@ -1,131 +1,120 @@
 // Single source of truth for every data anchor in the deck.
-// Pulled directly from README.md "Key Data Anchors" table.
-// Change a number here -> every slide updates.
+// Board-ready discipline: anchor stats only earn their place when they reinforce strategy.
 
 export const deck = {
   client: 'CK Marketing',
-  clientLong: 'Clayton Kendall + Concord, post-merger',
-  authors: 'PerformanceLabs.AI × Aplora.AI',
-  deliveryDate: 'April 24, 2026',
+  clientLong: 'Clayton Kendall + Concord Marketing, post-merger',
+  authors: 'PerformanceLabs.AI × Aplora',
+  deliveryDate: '4. 27. 26',
+  audience: 'The Board of Directors',
+  quarter: 'Q2 2026',
   revenueTarget: '$97.1M',
   revenueTargetLong: '$97,114,598',
   activePipeline: '$7.1M',
   activeDeals: 96,
-  contactsUnified: '65K',
-  inactiveContacts: '38K',
-  inactivePct: '58%'
+  contactsUnified: '65K'
 }
 
+// Two motions, kept lean. Calendar reads `peaks`. Slide 1 reads `cycleDays` + `label` for proof.
+// Other former motion fields (avgDeal, deals, volume, lift, liftBase, legacy) intentionally removed -
+// no slide references them in the board-cut deck.
 export const motions = {
   store: {
     key: 'store',
     label: 'Corporate Store',
-    legacy: 'Concord legacy',
-    avgDeal: '$609K',
     cycleDays: 203,
-    deals: 224,
-    volume: '$148.4M',
-    peaks: ['Jan', 'Apr', 'Oct'],
-    lift: '+$376K',
-    liftBase: '$148.4M base'
+    peaks: ['Jan', 'Apr', 'Oct']
   },
   transactional: {
     key: 'transactional',
     label: 'Multi-Location',
-    legacy: 'Clayton Kendall legacy',
-    avgDeal: '$37K',
     cycleDays: 80,
-    deals: 530,
-    volume: '$22.8M',
-    peaks: ['Mar', 'May', 'Aug', 'Oct'],
-    lift: '+$18.2K',
-    liftBase: '$22.8M base'
-  },
-  combinedLift: '+$394.2K'
+    peaks: ['Mar', 'May', 'Aug', 'Oct']
+  }
 }
 
-export const verticals = {
-  composite: ['Construction', 'Financial', 'Consumer'],
-  store: ['Construction', 'Financial', 'Insurance'],
-  transactional: ['Real Estate', 'Consumer', 'Construction'],
-  pursuedCount: 41,
-  anchors: [
-    { name: 'Accounting', winRate: '57%', note: 'highest yield per pursuit-hour' },
-    { name: 'Construction', winRate: '41.7%', note: '$14.4M volume' }
-  ]
-}
-
-// Finding 03: monthly net swings (positive = peak contribution, negative = trough drag).
-// Anchored to README: Jan +$1.22M, Apr +$353K, Oct +$1.12M explicit peaks.
-// Intermediate months modeled to total to the 43-peak / 43-trough rhythm.
-// Values in thousands of dollars (net swing vs. monthly average).
-export const seasonality = [
-  { month: 'Jan', net: 1220, label: '+$1.22M' },
-  { month: 'Feb', net: -420, label: '-$420K' },
-  { month: 'Mar', net: 180, label: '+$180K' },
-  { month: 'Apr', net: 353, label: '+$353K' },
-  { month: 'May', net: 640, label: '+$640K' },
-  { month: 'Jun', net: -280, label: '-$280K' },
-  { month: 'Jul', net: -510, label: '-$510K' },
-  { month: 'Aug', net: 290, label: '+$290K' },
-  { month: 'Sep', net: -180, label: '-$180K' },
-  { month: 'Oct', net: 1120, label: '+$1.12M' },
-  { month: 'Nov', net: -340, label: '-$340K' },
-  { month: 'Dec', net: -610, label: '-$610K' }
-]
-
-export const seasonalityMeta = {
-  peaks: 43,
-  troughs: 43,
-  mayCluster: { accounts: 7, spend: '$3.4M annual' }
-}
-
-export const findings = [
+// Slide 2 - sample-style narrative findings. No metrics in card bodies.
+export const findings3 = [
   {
     id: '01',
-    title: 'Two motions. One combined advantage.',
-    frame: 'One roof. Two economic engines. Full-spectrum buyer coverage.'
+    title: 'Two sales motions, one blended forecast.',
+    body: 'Clayton Kendall + Concord Marketing run two fundamentally different sales motions, but operate under one blended forecast that obscures both.'
   },
   {
     id: '02',
-    title: 'Composite scoring. Cross-sell unlocked.',
-    frame: 'Top 3 verticals per pipeline across 41 pursued.'
+    title: 'Efficiency hides behind deal size.',
+    body: 'A small number of industries deliver outsized results when scored on efficiency, not just deal size.'
   },
   {
     id: '03',
-    title: 'Buyers run on rhythms, not quarters.',
-    frame: '43 peaks. 43 troughs. Calendar QBRs miss both.'
-  },
-  {
-    id: '04',
-    title: '38K sleeper contacts, visible across both legacies.',
-    frame: '58% of 65K contacts inactive. T1 outreach / T2 nurture / T3 purge.'
-  },
-  {
-    id: '05',
-    title: 'Hygiene is where merger forecast risk lives.',
-    frame: '5-10% stage & naming mismatch. 7-figure unattributed revenue.'
-  },
-  {
-    id: '06',
-    title: 'The merger thesis, evidenced.',
-    frame: 'Two motions. Composite ICP. Timed to rhythm. Visible across both books. Measured on hygiene.',
-    isSummary: true
+    title: 'Buying rhythms are predictable.',
+    body: "Customers buy on predictable rhythms. CK's outreach cadence isn't aligned to them."
   }
 ]
 
-export const cadence = [
-  { when: 'Weekly', what: 'Hygiene score as leadership KPI' },
-  { when: 'Monthly', what: 'ICP reallocation across the combined book' },
-  { when: 'Quarterly', what: 'Dual-pipeline forecast · seasonality-led QBRs' },
-  { when: 'Annually', what: 'Territory & headcount modeled from composite map' }
+// Slide 3 - three operational shifts. FROM is current state (struck through), TO is the change.
+export const shifts = [
+  {
+    verb: 'SEPARATE',
+    headline: 'Two motions, two scorecards.',
+    from: 'One blended scorecard',
+    to: 'Distinct scorecards so each motion is managed on its own terms.'
+  },
+  {
+    verb: 'SCORE',
+    headline: 'Composite over deal size.',
+    from: 'Deal-size tiering',
+    to: 'Composite scoring: win rate, cycle speed, rep efficiency, expansion potential.'
+  },
+  {
+    verb: 'SEQUENCE',
+    headline: 'Match the buying window.',
+    from: 'Internal quarterly cadence',
+    to: 'Outreach sequenced to customer buying windows.'
+  }
 ]
 
-export const qbrSteps = [
-  { n: '01', title: 'Reads account history', body: 'Every buying pattern, across both legacy systems.' },
-  { n: '02', title: 'Pulls market context', body: 'Segment-specific trends, competitor signals.' },
-  { n: '03', title: 'Builds the QBR framework', body: 'Motion-aware. Corporate Store vs Multi-Location.' },
-  { n: '04', title: 'Delivers 90 days ahead', body: 'To the rep, before the peak window opens.' }
+// Slide 3 - rep + marketing detail revealed under the SEQUENCE row.
+// Three short bullets per side, zero numbers - speaker fills in specifics verbally.
+export const cadenceDetail = {
+  reps: [
+    'Store-cycle reps coached to multi-stakeholder patience.',
+    'Multi-Location reps coached to volume cadence.',
+    'Pursuit hours concentrated on top composite verticals.'
+  ],
+  marketing: [
+    'QBRs fire 60-90 days ahead of each peak.',
+    'Spend weighted to peak months.',
+    'Cross-sell campaigns trigger on motion signals.'
+  ]
+}
+
+// Slide 4 - two-card roadmap (sample's framing).
+export const roadmap = [
+  {
+    label: 'Market Intelligence',
+    question: 'Where should we fish?',
+    body: 'The AI identifies which industries, segments, and named accounts CK should pursue based on actual win patterns across the combined data.'
+  },
+  {
+    label: 'Rep Specialization',
+    question: 'Who should fish where?',
+    body: 'The AI matches individual rep strengths to verticals where they close fastest, shortening deal cycles across the org.'
+  }
+]
+
+// Slide 1 - 3-step architecture flow (sample replaces 4-step Connect/Vectorize/Interrogate/Deliver).
+export const architectureFlow = [
+  { n: '01', verb: 'CONNECT', title: 'Ingestion', body: 'Three revenue systems wired into one pipeline.' },
+  { n: '02', verb: 'UNIFY', title: 'One record per entity', body: 'Every account, contact, and deal becomes one computable object.' },
+  { n: '03', verb: 'ANALYZE', title: 'Continuous intelligence', body: 'AI detects patterns across every domain, always on, always learning.' }
+]
+
+// Slide 1 - three revenue systems converging into "One Source of Truth".
+export const sources = [
+  { name: 'HubSpot', detail: 'Pipeline & activity' },
+  { name: 'Finance', detail: 'Budget, forecast, actuals' },
+  { name: 'Sales Data', detail: 'Historical orders & accounts' }
 ]
 
 export const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']

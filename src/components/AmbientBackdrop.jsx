@@ -25,6 +25,31 @@ export function NavyBackdrop() {
   )
 }
 
+// Dark backdrop for board-update slides. Near-black with restrained orange spotlight,
+// matching the sample deck's aesthetic family. Used by Slides 0, 2, 3, 5.
+export function DarkBackdrop() {
+  return (
+    <>
+      <div className="absolute inset-0 bg-[var(--color-deck-dark)]" />
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 12% 0%, rgba(250,168,64,0.08), transparent 55%), radial-gradient(ellipse at 88% 100%, rgba(30,38,114,0.10), transparent 55%)'
+        }}
+        animate={{ opacity: [0.6, 0.95, 0.6] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.025]"
+        style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #FFFFFF 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }}
+      />
+    </>
+  )
+}
+
 // Cream backdrop for light slides. Subtle animated accent rule sweeps across top.
 export function CreamBackdrop({ tone = 'cream-soft' }) {
   const bg = tone === 'cream' ? 'var(--color-cream)' : 'var(--color-cream-soft)'

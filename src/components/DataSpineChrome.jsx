@@ -31,7 +31,7 @@ const SOURCES = [
   },
   {
     id: 'transactions',
-    label: 'Transactions',
+    label: 'Sales Data',
     sub: 'Historical orders',
     icon: Receipt,
     color: '#1E9FFF',

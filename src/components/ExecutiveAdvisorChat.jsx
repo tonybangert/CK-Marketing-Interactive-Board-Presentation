@@ -3,23 +3,40 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Bot, Trash2, Minimize2, Send, Sparkles } from 'lucide-react'
 import Typewriter from './Typewriter.jsx'
 
-const QUESTION = 'How much revenue do we generate during our peak share of wallet months?'
+const QUESTION_1 = 'How much revenue do we generate during our peak share of wallet months?'
+const QUESTION_2 = 'Which 3 accounts need attention right now?'
 
-// Matches the real advisor output visible in the screenshot (em-dashes replaced
-// with periods per brand lint; semantic content unchanged).
-const RESPONSE_SEGMENTS = [
+const RESPONSE_1_SEGMENTS = [
   'Good. I have monthly revenue data across your top 15 accounts, which span both CK Multi-location and CMS Corporate. ',
   { text: 'Peak revenue months are June, August, September, and October. ', bold: true, color: '#0B1A38' },
   'June and October are the clearest high-water marks.'
 ]
 
+const RESPONSE_2_SEGMENTS = [
+  'Three accounts trigger right now, each for a different reason:\n\n',
+  { text: '1. Herc Rentals', bold: true, color: '#0B1A38' },
+  ' · Store · August peak of $755K historically. QBR timing is critical. Fire the window now or miss the season.\n\n',
+  { text: '2. Country Financial', bold: true, color: '#0B1A38' },
+  ' · Store · silently declining. Pacing at 17.7% YoY below trend. Recommend executive intervention this month.\n\n',
+  { text: '3. Wetzels', bold: true, color: '#0B1A38' },
+  ' · Multi-Location · historical trough in June. Marketing and rep activity in May lifts share of wallet through the dip.'
+]
+
 export default function ExecutiveAdvisorChat({ revealed, typing }) {
-  const [showResponse, setShowResponse] = useState(false)
+  const [phase, setPhase] = useState(0)
+  // 0: nothing. 1: Q1 visible, thinking dots.
+  // 2: Q1 + R1 typing. 3: Q1 + R1 done.
+  // 4: Q2 visible, thinking. 5: Q2 + R2 typing.
 
   useEffect(() => {
-    if (!typing) { setShowResponse(false); return }
-    const t = setTimeout(() => setShowResponse(true), 900)
-    return () => clearTimeout(t)
+    if (!typing) { setPhase(0); return }
+    const timers = []
+    timers.push(setTimeout(() => setPhase(1), 200))   // Q1
+    timers.push(setTimeout(() => setPhase(2), 1100))  // R1 typing
+    timers.push(setTimeout(() => setPhase(3), 4500))  // R1 done
+    timers.push(setTimeout(() => setPhase(4), 5200))  // Q2
+    timers.push(setTimeout(() => setPhase(5), 6100))  // R2 typing
+    return () => timers.forEach(clearTimeout)
   }, [typing])
 
   return (
@@ -27,7 +44,7 @@ export default function ExecutiveAdvisorChat({ revealed, typing }) {
       initial={{ opacity: 0, y: 18, scale: 0.97 }}
       animate={revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 18, scale: 0.97 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-sm overflow-hidden border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.35)] flex flex-col"
+      className="h-full rounded-sm overflow-hidden border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.35)] flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2.5 border-b border-[#E6EAF0] bg-white">
@@ -57,50 +74,105 @@ export default function ExecutiveAdvisorChat({ revealed, typing }) {
       </div>
 
       {/* Conversation */}
-      <div className="flex-1 p-3 bg-[#F6F9FC] overflow-hidden">
-        {/* User question (blue bubble, right aligned) */}
+      <div className="flex-1 p-4 bg-[#F6F9FC] overflow-hidden flex flex-col gap-3">
+        {/* Q1 */}
         <AnimatePresence>
-          {typing && (
+          {phase >= 1 && (
             <motion.div
+              key="q1"
               initial={{ opacity: 0, x: 24, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="flex justify-end gap-2 mb-3"
+              className="flex justify-end gap-2"
             >
               <div
-                className="max-w-[75%] rounded-[10px] rounded-br-sm px-3 py-2 text-[11px] text-white shadow-sm"
+                className="max-w-[75%] rounded-[10px] rounded-br-sm px-3.5 py-2.5 text-[12px] text-white shadow-sm"
                 style={{ background: '#1E9FFF' }}
               >
-                {QUESTION}
+                {QUESTION_1}
               </div>
               <div
-                className="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+                className="h-7 w-7 rounded-full flex items-center justify-center shrink-0"
                 style={{ background: '#EFF7FF', border: '1px solid #D6E8FA' }}
               >
-                <span className="text-[10px] font-bold text-[#1E9FFF]">T</span>
+                <span className="text-[11px] font-bold text-[#1E9FFF]">T</span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Bot response (white bubble, left aligned, typing) */}
+        {/* R1 */}
         <AnimatePresence>
-          {typing && (
+          {phase >= 1 && (
             <motion.div
+              key="r1"
               initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="flex gap-2 items-start"
             >
               <div
-                className="h-6 w-6 rounded-sm flex items-center justify-center shrink-0"
+                className="h-7 w-7 rounded-sm flex items-center justify-center shrink-0"
                 style={{ background: 'linear-gradient(135deg, #1E9FFF, #3FA9F5)' }}
               >
-                <Bot size={12} color="white" strokeWidth={2.2} />
+                <Bot size={13} color="white" strokeWidth={2.2} />
               </div>
-              <div className="max-w-[85%] rounded-[10px] rounded-bl-sm px-3 py-2 bg-white border border-[#E6EAF0] text-[11px] text-[#0B1A38] leading-[1.5] shadow-sm">
-                {showResponse ? (
-                  <Typewriter segments={RESPONSE_SEGMENTS} active={showResponse} speedMs={18} />
+              <div className="max-w-[85%] rounded-[10px] rounded-bl-sm px-3.5 py-2.5 bg-white border border-[#E6EAF0] text-[12px] text-[#0B1A38] leading-[1.55] shadow-sm">
+                {phase >= 2 ? (
+                  <Typewriter segments={RESPONSE_1_SEGMENTS} active speedMs={14} />
+                ) : (
+                  <ThinkingDots />
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Q2 */}
+        <AnimatePresence>
+          {phase >= 4 && (
+            <motion.div
+              key="q2"
+              initial={{ opacity: 0, x: 24, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="flex justify-end gap-2 mt-2"
+            >
+              <div
+                className="max-w-[75%] rounded-[10px] rounded-br-sm px-3.5 py-2.5 text-[12px] text-white shadow-sm"
+                style={{ background: '#1E9FFF' }}
+              >
+                {QUESTION_2}
+              </div>
+              <div
+                className="h-7 w-7 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: '#EFF7FF', border: '1px solid #D6E8FA' }}
+              >
+                <span className="text-[11px] font-bold text-[#1E9FFF]">T</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* R2 */}
+        <AnimatePresence>
+          {phase >= 4 && (
+            <motion.div
+              key="r2"
+              initial={{ opacity: 0, x: -24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="flex gap-2 items-start"
+            >
+              <div
+                className="h-7 w-7 rounded-sm flex items-center justify-center shrink-0"
+                style={{ background: 'linear-gradient(135deg, #1E9FFF, #3FA9F5)' }}
+              >
+                <Bot size={13} color="white" strokeWidth={2.2} />
+              </div>
+              <div className="max-w-[85%] rounded-[10px] rounded-bl-sm px-3.5 py-2.5 bg-white border border-[#E6EAF0] text-[12px] text-[#0B1A38] leading-[1.55] shadow-sm whitespace-pre-line">
+                {phase >= 5 ? (
+                  <Typewriter segments={RESPONSE_2_SEGMENTS} active speedMs={9} />
                 ) : (
                   <ThinkingDots />
                 )}
