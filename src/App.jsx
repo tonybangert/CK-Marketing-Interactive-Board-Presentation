@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import SlideIntro from './slides/SlideIntro.jsx'
 import Slide0 from './slides/Slide0.jsx'
 import Slide1Unify from './slides/Slide1Unify.jsx'
 import Slide1 from './slides/Slide1.jsx'
@@ -13,13 +14,14 @@ import { useDeckState } from './hooks/useDeckState.js'
 import { deck } from './data.js'
 
 const SLIDES = [
-  { id: 0, label: 'Cover',                  component: Slide0,      steps: 0, hideFooter: true, hideSpine: true },
-  { id: 1, label: 'How it works',           component: Slide1Unify, steps: 0, hideFooter: true, hideSpine: true },
-  { id: 2, label: 'Live product',           component: Slide1,      steps: 1, hideFooter: true, hideSpine: true },
-  { id: 3, label: 'Patterns + Shifts',      component: Slide2,      steps: 6, hideFooter: true },
-  { id: 4, label: 'Roadmap',                component: Slide4,      steps: 3, hideFooter: true },
-  { id: 5, label: 'Engagement',             component: Slide5,      steps: 0, hideFooter: true, hideSpine: true },
-  { id: 6, label: 'Thank you',              component: SlideThankYou, steps: 0, hideFooter: true, hideSpine: true }
+  { id: 0, label: 'Intro',                  component: SlideIntro,  steps: 0, hideFooter: true, hideSpine: true, hideHud: true },
+  { id: 1, label: 'Cover',                  component: Slide0,      steps: 0, hideFooter: true, hideSpine: true },
+  { id: 2, label: 'How it works',           component: Slide1Unify, steps: 0, hideFooter: true, hideSpine: true },
+  { id: 3, label: 'Live product',           component: Slide1,      steps: 1, hideFooter: true, hideSpine: true },
+  { id: 4, label: 'Patterns + Shifts',      component: Slide2,      steps: 6, hideFooter: true },
+  { id: 5, label: 'Roadmap',                component: Slide4,      steps: 3, hideFooter: true },
+  { id: 6, label: 'Engagement',             component: Slide5,      steps: 0, hideFooter: true, hideSpine: true },
+  { id: 7, label: 'Thank you',              component: SlideThankYou, steps: 0, hideFooter: true, hideSpine: true }
 ]
 
 const slideVariants = {
@@ -71,7 +73,7 @@ export default function App() {
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0"
           >
-            <Current step={step} />
+            <Current step={step} onStart={next} />
             {!SLIDES[slideIndex].hideFooter && (
               <DeckFooter
                 authors={deck.authors}
@@ -91,16 +93,18 @@ export default function App() {
         />
       </div>
 
-      <HUD
-        slides={SLIDES}
-        slideIndex={slideIndex}
-        step={step}
-        onNext={next}
-        onPrev={prev}
-        onRestart={restartSlide}
-        onFill={fillSlide}
-        onJump={jumpSlide}
-      />
+      {!SLIDES[slideIndex].hideHud && (
+        <HUD
+          slides={SLIDES}
+          slideIndex={slideIndex}
+          step={step}
+          onNext={next}
+          onPrev={prev}
+          onRestart={restartSlide}
+          onFill={fillSlide}
+          onJump={jumpSlide}
+        />
+      )}
     </div>
   )
 }

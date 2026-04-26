@@ -229,17 +229,19 @@ function MotionsBeatViz({ inResponse }) {
                 transformOrigin: 'top'
               }}
             />
+            {/* Animating only opacity (not scale) — framer-motion would otherwise own the
+                transform property and overwrite the static translate that anchors the label
+                to the LEFT of the dashed line. Position uses `right` so we don't need transform. */}
             <motion.div
               key="blend-label"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.55, delay: 1.0 }}
               className="absolute text-[11px] uppercase tracking-[0.32em] font-semibold text-white/85 whitespace-nowrap px-3 py-1 rounded-sm"
               style={{
-                left: `${blendX}%`,
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
+                right: `calc(${100 - blendX}% + 10px)`,
+                top: 'calc(50% - 13px)',
                 background: 'var(--color-deck-dark)',
                 border: '1px solid rgba(255,255,255,0.18)'
               }}
@@ -331,10 +333,14 @@ function EfficiencyBeatViz({ inResponse }) {
   const cutoffPct = (CYCLE_CUTOFF_DAYS / maxCycle) * 100
 
   return (
+    // Layout architecture: header (auto height) + rows wrapper (flex-1, clipped) + callout
+    // container (fixed h-7, always reserved). Each piece is a real flex child — no absolute
+    // positioning competing with flex sizing. Confirmed via DOM inspection: at 1280x720
+    // viewport the entire viz only gets ~180px tall, so per-row chrome is kept minimal.
     <div className="relative h-full flex flex-col px-2">
       {/* Header row */}
       <div
-        className="grid items-baseline gap-6 pb-3 mb-2 border-b border-white/10 transition-[grid-template-columns] duration-700 ease-out"
+        className="grid items-baseline gap-6 pb-2 mb-1 border-b border-white/10 transition-[grid-template-columns] duration-700 ease-out"
         style={{
           gridTemplateColumns: inResponse
             ? '46px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.4fr)'
@@ -347,8 +353,9 @@ function EfficiencyBeatViz({ inResponse }) {
         <ColumnHeader visible={inResponse} delay={0.2} label="Cycle (days)" accent />
       </div>
 
-      {/* Tier rows + 120-day cutoff line in cycle column */}
-      <div className="relative flex-1 min-h-0 flex flex-col justify-between gap-1 overflow-hidden">
+      {/* Tier rows. justify-evenly spreads rows in available space; overflow-hidden clips
+          if rows can't fit (rather than letting them spill into the callout below). */}
+      <div className="relative flex-1 min-h-0 flex flex-col justify-evenly overflow-hidden">
         {dealTiers.map((tier, i) => (
           <TierRow
             key={tier.id}
@@ -364,20 +371,24 @@ function EfficiencyBeatViz({ inResponse }) {
         ))}
       </div>
 
-      {/* Sub-line callout */}
-      <AnimatePresence>
-        {inResponse && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55, delay: 0.7 }}
-            className="text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold mt-3 text-center"
-          >
-            Cycles over {CYCLE_CUTOFF_DAYS} days don't book this year
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Callout container — real flex child with reserved height, always in the layout
+          (text fades in/out via AnimatePresence). Cannot be overlapped by overflowing rows
+          because it occupies its own slot in the flex column. */}
+      <div className="h-7 mt-2 flex items-center justify-center text-center shrink-0">
+        <AnimatePresence>
+          {inResponse && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.55, delay: 0.7 }}
+              className="text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold"
+            >
+              Cycles over {CYCLE_CUTOFF_DAYS} days don't book this year
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
@@ -403,8 +414,10 @@ function ColumnHeader({ visible, delay, label, accent }) {
 
 function TierRow({ tier, index, inResponse, sizePct, winPct, cyclePct, cutoffPct, withinCutoff }) {
   return (
+    // py-0 (was py-1) and slightly smaller font sizes so 5 rows + header + callout fit
+    // comfortably in the ~180px the BeatCard allocates at standard 1280x720 viewport.
     <div
-      className="grid items-center gap-6 py-1 transition-[grid-template-columns] duration-700 ease-out"
+      className="grid items-center gap-6 py-0 transition-[grid-template-columns] duration-700 ease-out"
       style={{
         gridTemplateColumns: inResponse
           ? '46px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.4fr)'
@@ -418,7 +431,7 @@ function TierRow({ tier, index, inResponse, sizePct, winPct, cyclePct, cutoffPct
 
       {/* Deal size cell */}
       <div className="flex items-center gap-3">
-        <div className="font-serif text-[18px] text-white w-16 shrink-0">{tier.sizeLabel}</div>
+        <div className="font-serif text-[16px] text-white w-16 shrink-0">{tier.sizeLabel}</div>
         <div className="flex-1 h-3 bg-white/[0.05] rounded-sm overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
@@ -433,7 +446,7 @@ function TierRow({ tier, index, inResponse, sizePct, winPct, cyclePct, cutoffPct
       {/* Win rate cell */}
       <CellSlideIn visible={inResponse} delay={0.15 + index * 0.06}>
         <div className="flex items-center gap-3">
-          <div className="font-serif text-[18px] text-white w-12 shrink-0">{winPct}%</div>
+          <div className="font-serif text-[16px] text-white w-12 shrink-0">{winPct}%</div>
           <div className="flex-1 h-3 bg-white/[0.05] rounded-sm overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
@@ -449,7 +462,7 @@ function TierRow({ tier, index, inResponse, sizePct, winPct, cyclePct, cutoffPct
       {/* Cycle days cell - with 120-day cutoff coloring */}
       <CellSlideIn visible={inResponse} delay={0.2 + index * 0.06}>
         <div className="flex items-center gap-3">
-          <div className="font-serif text-[18px] w-14 shrink-0" style={{ color: withinCutoff ? 'var(--color-orange)' : 'rgba(239,69,55,0.85)' }}>
+          <div className="font-serif text-[16px] w-14 shrink-0" style={{ color: withinCutoff ? 'var(--color-orange)' : 'rgba(239,69,55,0.85)' }}>
             {tier.cycleDays}d
           </div>
           <div className="relative flex-1 h-3 bg-white/[0.05] rounded-sm overflow-hidden">
@@ -512,67 +525,92 @@ function RhythmsBeatViz({ inResponse }) {
   const W = 1000
   const H = 240
   const padX = 30
-  const padY = 30
+  // padY needs to stay >= 28 so peak letter labels (y = peakY - 18, with peakY = padY when
+  // a value reaches the normalized max) and fire-marker labels (y = padY - 14) don't clip
+  // off the top of the SVG. Combined with the data-range normalization below, the wave
+  // still spans ~77% of the canvas vertically.
+  const padY = 28
   const stepX = (W - padX * 2) / (SEASONALITY_VALUES.length - 1)
   const months = ['J','F','M','A','M','J','J','A','S','O','N','D']
 
-  const points = SEASONALITY_VALUES.map((v, i) => ({
-    x: padX + i * stepX,
-    y: padY + (1 - v) * (H - padY * 2),
-    v
-  }))
+  // Normalize data values to [0, 1] using the actual min/max so the wave spans the
+  // entire vertical canvas. The raw values only cover 0.28-0.95 (67% of y-range); without
+  // this stretch the wave occupies barely half the SVG and reads as "compressed."
+  const vMin = Math.min(...SEASONALITY_VALUES)
+  const vMax = Math.max(...SEASONALITY_VALUES)
+  const points = SEASONALITY_VALUES.map((v, i) => {
+    const norm = (v - vMin) / (vMax - vMin)
+    return {
+      x: padX + i * stepX,
+      y: padY + (1 - norm) * (H - padY * 2),
+      v
+    }
+  })
   const linePath = catmullRom(points)
   // Month label x-percentages share the exact coords as the wave's data points
   const monthXPercents = months.map((_, i) => ((padX + i * stepX) / W) * 100)
 
-  // Fire-window positions: 60-90 days before each peak
+  // Fire-window positions: 60-90 days before each peak. Apr and May peaks are adjacent
+  // months, so their fire windows would overlap in calendar time and crowd visually as
+  // two markers — consolidating to a single mid-Feb marker that covers both upcoming peaks.
   const fireXs = [
-    padX + 10.7 * stepX,  // Nov  -> Jan peak
-    padX + 1.4 * stepX,   // Feb  -> Apr peak
-    padX + 2.4 * stepX,   // Mar  -> May peak
-    padX + 7.2 * stepX    // Aug  -> Oct peak
+    padX + 10.7 * stepX,  // Nov          -> Jan peak
+    padX + 1.9 * stepX,   // mid-Feb/Mar  -> Apr + May peaks (consolidated)
+    padX + 7.2 * stepX    // Aug          -> Oct peak
   ]
 
+  // ALL text labels live in HTML (not SVG) and share one className so the top peak labels
+  // and bottom month labels render at identical font sizes / letter-spacing — guaranteeing
+  // the "O" peak letter and the "O" month letter sit at the same x position with the same
+  // visual width. Putting text inside an SVG that uses preserveAspectRatio="none" stretches
+  // the glyphs horizontally with the wave, which is what was causing the visible mismatch.
+  const TEXT_CLASS = 'absolute text-[11px] uppercase tracking-[0.18em] font-bold'
+
   return (
-    <div className="relative h-full flex flex-col">
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="w-full h-full"
-        preserveAspectRatio="none"
-        style={{ flex: 1, minHeight: 0 }}
-      >
-        <defs>
-          <linearGradient id="beat-wave-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="var(--color-orange)" stopOpacity="0.32" />
-            <stop offset="100%" stopColor="var(--color-orange)" stopOpacity="0" />
-          </linearGradient>
-        </defs>
+    // pb-9 reserves space at the bottom for the absolutely-positioned shift callout, so
+    // the SVG's flex-1 height stays constant between pattern and shift states.
+    <div className="relative h-full flex flex-col pb-9">
+      {/* SVG + HTML-overlay container. SVG holds geometric elements (paths, dots, lines)
+          which benefit from preserveAspectRatio stretching. HTML overlays render text. */}
+      <div className="relative flex-1 min-h-0">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="none"
+          style={{ display: 'block' }}
+        >
+          <defs>
+            <linearGradient id="beat-wave-fill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="var(--color-orange)" stopOpacity="0.32" />
+              <stop offset="100%" stopColor="var(--color-orange)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
 
-        <motion.path
-          d={`${linePath} L ${points[points.length - 1].x} ${H - padY} L ${points[0].x} ${H - padY} Z`}
-          fill="url(#beat-wave-fill)"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.0 }}
-        />
-        <motion.path
-          d={linePath}
-          fill="none"
-          stroke="var(--color-orange)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.4, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        />
+          <motion.path
+            d={`${linePath} L ${points[points.length - 1].x} ${H - padY} L ${points[0].x} ${H - padY} Z`}
+            fill="url(#beat-wave-fill)"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          />
+          <motion.path
+            d={linePath}
+            fill="none"
+            stroke="var(--color-orange)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.4, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          />
 
-        {/* Peak dots */}
-        {points.map((p, i) => {
-          if (!SEASONALITY_PEAKS.includes(i)) return null
-          return (
-            <g key={i}>
+          {/* Peak dots (text label is rendered as HTML overlay below) */}
+          {points.map((p, i) => {
+            if (!SEASONALITY_PEAKS.includes(i)) return null
+            return (
               <motion.circle
+                key={i}
                 cx={p.x}
                 cy={p.y}
                 r={6}
@@ -581,71 +619,86 @@ function RhythmsBeatViz({ inResponse }) {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 1.4 + i * 0.05 }}
               />
-              <motion.text
-                x={p.x}
-                y={p.y - 18}
-                textAnchor="middle"
-                fontSize="11"
-                fontWeight="700"
-                fill="var(--color-orange)"
-                style={{ letterSpacing: '0.18em', textTransform: 'uppercase' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 1.5 + i * 0.05 }}
-              >
-                {months[i]}
-              </motion.text>
-            </g>
+            )
+          })}
+
+          {/* Fire-window markers — line + dot. Label is rendered as HTML overlay below. */}
+          <AnimatePresence>
+            {inResponse && fireXs.map((x, i) => (
+              <g key={i}>
+                <motion.line
+                  initial={{ opacity: 0, y2: padY - 4 + 30 }}
+                  animate={{ opacity: 1, y2: padY - 4 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.55, delay: 0.1 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  x1={x}
+                  x2={x}
+                  y1={H - padY}
+                  stroke="var(--color-orange)"
+                  strokeWidth="2"
+                />
+                <motion.circle
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                  cx={x}
+                  cy={padY - 4}
+                  r={5}
+                  fill="var(--color-orange)"
+                />
+              </g>
+            ))}
+          </AnimatePresence>
+        </svg>
+
+        {/* Peak letter labels — HTML overlays positioned at the same x as the SVG dots.
+            top uses calc() to push the label ~22px above the dot regardless of container height. */}
+        {points.map((p, i) => {
+          if (!SEASONALITY_PEAKS.includes(i)) return null
+          return (
+            <motion.div
+              key={`peak-${i}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 1.5 + i * 0.05 }}
+              className={`${TEXT_CLASS} text-[var(--color-orange)]`}
+              style={{
+                left: `${(p.x / W) * 100}%`,
+                top: `calc(${(p.y / H) * 100}% - 22px)`,
+                transform: 'translateX(-50%)'
+              }}
+            >
+              {months[i]}
+            </motion.div>
           )
         })}
 
-        {/* Fire-window markers - appear in response state */}
+        {/* FIRE labels — HTML overlays at top of each fire marker line. */}
         <AnimatePresence>
           {inResponse && fireXs.map((x, i) => (
-            <g key={i}>
-              <motion.line
-                initial={{ opacity: 0, y2: padY - 4 + 30 }}
-                animate={{ opacity: 1, y2: padY - 4 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.55, delay: 0.1 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                x1={x}
-                x2={x}
-                y1={H - padY}
-                stroke="var(--color-orange)"
-                strokeWidth="2"
-              />
-              <motion.circle
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
-                cx={x}
-                cy={padY - 4}
-                r={5}
-                fill="var(--color-orange)"
-              />
-              <motion.text
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
-                x={x}
-                y={padY - 14}
-                textAnchor="middle"
-                fontSize="10"
-                fontWeight="700"
-                fill="var(--color-orange)"
-                style={{ letterSpacing: '0.18em', textTransform: 'uppercase' }}
-              >
-                Fire
-              </motion.text>
-            </g>
+            <motion.div
+              key={`fire-${i}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
+              className={`${TEXT_CLASS} text-[var(--color-orange)]`}
+              style={{
+                left: `${(x / W) * 100}%`,
+                top: 0,
+                transform: 'translateX(-50%)'
+              }}
+            >
+              Fire
+            </motion.div>
           ))}
         </AnimatePresence>
-      </svg>
+      </div>
 
-      {/* Month ruler - HTML labels positioned at the same x percentages as the wave's data points.
-          Kept outside the SVG so text stays crisp regardless of how the wave is stretched. */}
+      {/* Month ruler — uses TEXT_CLASS to match the peak labels exactly (same font size,
+          weight, letter-spacing). The "O" peak label and the "O" month label now have
+          identical glyph dimensions and are anchored to the same x percentage. */}
       <div className="relative h-6 mt-2">
         {months.map((m, i) => (
           <motion.div
@@ -653,9 +706,10 @@ function RhythmsBeatViz({ inResponse }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.3 + i * 0.04 }}
-            className="absolute top-0 text-[12px] uppercase tracking-[0.12em] font-bold"
+            className={TEXT_CLASS}
             style={{
               left: `${monthXPercents[i]}%`,
+              top: 0,
               transform: 'translateX(-50%)',
               color: SEASONALITY_PEAKS.includes(i) ? 'var(--color-orange)' : 'rgba(255,255,255,0.4)'
             }}
@@ -672,7 +726,7 @@ function RhythmsBeatViz({ inResponse }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.55, delay: 0.7 }}
-            className="text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold mt-3 text-center"
+            className="absolute bottom-0 left-0 right-0 text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold text-center"
           >
             Reps coach to cycle · Marketing fires 60-90d ahead
           </motion.div>

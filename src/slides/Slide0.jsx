@@ -62,26 +62,21 @@ export default function Slide0() {
           Clayton Kendall <span className="text-[var(--color-orange)]">+</span> Concord Marketing
         </motion.div>
 
-        {/* Headline + sub */}
-        <div className="mt-12 text-center max-w-[900px]">
+        {/* Headline — long-form board-update statement. Sized down from the original 88px
+            two-word headline so it can wrap to ~3 lines without crowding the logo above
+            or the prepared-for footer below. Orange italic on "Revenue Operations" is the
+            same emphasis pattern used in SlideThankYou's "compounding year" lockup. */}
+        <div className="mt-10 text-center max-w-[1000px]">
           <motion.h1
             initial={{ opacity: 0, y: 18, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 0.9, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-[88px] leading-[0.98]"
+            className="font-serif text-[52px] leading-[1.08] text-balance"
           >
-            Revenue Intelligence
-            <span className="text-[var(--color-orange)]">.</span>
+            What Our AI Told Us About Your{' '}
+            <span className="italic text-[var(--color-orange)]">Revenue Operations</span>{' '}
+            in Under 8 Weeks<span className="text-[var(--color-orange)]">.</span>
           </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-5 text-[15px] text-white/60 max-w-[640px] mx-auto"
-          >
-            AI-driven insights accelerating close rates across two motions, three systems, one forecast.
-          </motion.p>
         </div>
       </div>
 
