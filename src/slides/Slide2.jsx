@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { motions, dealTiers } from '../data.js'
+import { motions, dealTiers, CYCLE_CUTOFF_DAYS } from '../data.js'
 import StepGate from '../components/StepGate.jsx'
 import { DarkBackdrop } from '../components/AmbientBackdrop.jsx'
 import EyebrowStrap from '../components/EyebrowStrap.jsx'
@@ -25,8 +25,8 @@ const BEATS = [
   },
   {
     id: '02',
-    pattern: 'Efficiency hides behind deal size.',
-    shift: 'Re-rank by yield, not size.',
+    pattern: 'Deal size alone is one dimension.',
+    shift: 'Win rate and speed to close shape the year.',
     Viz: EfficiencyBeatViz
   },
   {
@@ -314,103 +314,183 @@ function ScorecardBar({ label, days, widthPct, delay, color, inResponse, metrics
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Beat 2 - EFFICIENCY: 5 deal tiers sorted by deal size (diagnosis).
-//                      Click: tiers re-rank by composite score, top tier glows
-//                      orange, composite sub-bars appear (response).
+// Beat 2 - EFFICIENCY: Tier table with one column (deal size) in pattern state.
+//                      Click: two columns slide in (win rate + cycle days), with
+//                      a 120-day vertical cutoff line in the cycle column.
+//                      Tier order never changes - no inversion drama.
 // ─────────────────────────────────────────────────────────────────────────────
 function EfficiencyBeatViz({ inResponse }) {
-  const phase = inResponse ? 'score' : 'size'
-
-  const sortedBySize = [...dealTiers].sort((a, b) => b.size - a.size)
-  const sortedByScore = [...dealTiers].sort((a, b) => b.score - a.score)
-  const order = phase === 'size' ? sortedBySize : sortedByScore
-
-  const slotCount = dealTiers.length
-  const slotPercent = 100 / slotCount
   const maxSize = Math.max(...dealTiers.map(t => t.size))
+  const maxCycle = Math.max(...dealTiers.map(t => t.cycleDays))
+  const cutoffPct = (CYCLE_CUTOFF_DAYS / maxCycle) * 100
 
   return (
     <div className="relative h-full flex flex-col px-2">
-      <div className="flex items-baseline justify-between mb-3">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={phase}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.4 }}
-            className="text-[13px] uppercase tracking-[0.32em] font-semibold"
-            style={{ color: phase === 'size' ? 'rgba(255,255,255,0.5)' : 'var(--color-orange)' }}
-          >
-            {phase === 'size' ? 'Sorted by deal size' : 'Re-ranked by composite score'}
-          </motion.div>
-        </AnimatePresence>
-        <div className="text-[11px] uppercase tracking-[0.28em] text-white/35 font-semibold">
-          Win rate · cycle speed · expansion
-        </div>
+      {/* Header row */}
+      <div
+        className="grid items-baseline gap-6 pb-3 mb-2 border-b border-white/10 transition-[grid-template-columns] duration-700 ease-out"
+        style={{
+          gridTemplateColumns: inResponse
+            ? '46px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.4fr)'
+            : '46px minmax(0, 1fr) 0fr 0fr'
+        }}
+      >
+        <div className="text-[10px] uppercase tracking-[0.28em] text-white/40 font-semibold">Tier</div>
+        <div className="text-[10px] uppercase tracking-[0.28em] text-white/40 font-semibold">Deal size</div>
+        <ColumnHeader visible={inResponse} delay={0.1} label="Win rate" accent />
+        <ColumnHeader visible={inResponse} delay={0.2} label="Cycle (days)" accent />
       </div>
 
-      <div className="relative flex-1 min-h-0">
-        {dealTiers.map((tier) => {
-          const slotIndex = order.findIndex(t => t.id === tier.id)
-          const xPct = slotIndex * slotPercent + slotPercent / 2
-          const heightPct = (tier.size / maxSize) * 100
-          const isTop = slotIndex === 0
-          return (
-            <motion.div
-              key={tier.id}
-              animate={{ left: `${xPct}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 22, mass: 1.1 }}
-              className="absolute bottom-0 -translate-x-1/2 flex flex-col items-center justify-end"
-              style={{ width: `${slotPercent * 0.8}%`, height: '100%' }}
-            >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, color: phase === 'score' && isTop ? 'var(--color-orange)' : 'rgba(255,255,255,0.6)' }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="font-serif text-[18px] mb-2"
-              >
-                {tier.sizeLabel}
-              </motion.div>
-              <motion.div
-                initial={{ height: 0 }}
-                animate={{
-                  height: `${heightPct}%`,
-                  boxShadow: phase === 'score' && isTop ? '0 0 0 2px var(--color-orange)' : 'none'
-                }}
-                transition={{
-                  height: { duration: 0.85, delay: 0.2 + dealTiers.indexOf(tier) * 0.06, ease: [0.22, 1, 0.36, 1] },
-                  boxShadow: { duration: 0.4 }
-                }}
-                className="w-full rounded-sm"
-                style={{
-                  background: phase === 'score' && isTop
-                    ? 'linear-gradient(180deg, var(--color-orange), rgba(250,168,64,0.4))'
-                    : 'linear-gradient(180deg, rgba(46,53,160,0.85), rgba(30,38,114,0.6))'
-                }}
-              />
-              <div className="text-[10px] uppercase tracking-[0.24em] text-white/40 font-semibold mt-2">
-                {tier.id}
-              </div>
-            </motion.div>
-          )
-        })}
+      {/* Tier rows + 120-day cutoff line in cycle column */}
+      <div className="relative flex-1 min-h-0 flex flex-col justify-around py-1">
+        {dealTiers.map((tier, i) => (
+          <TierRow
+            key={tier.id}
+            tier={tier}
+            index={i}
+            inResponse={inResponse}
+            sizePct={(tier.size / maxSize) * 100}
+            winPct={tier.winRate}
+            cyclePct={(tier.cycleDays / maxCycle) * 100}
+            cutoffPct={cutoffPct}
+            withinCutoff={tier.cycleDays <= CYCLE_CUTOFF_DAYS}
+          />
+        ))}
       </div>
 
+      {/* Sub-line callout */}
       <AnimatePresence>
-        {phase === 'score' && (
+        {inResponse && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
+            transition={{ duration: 0.55, delay: 0.7 }}
             className="text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold mt-3 text-center"
           >
-            Highest yield per pursuit-hour
+            Cycles over {CYCLE_CUTOFF_DAYS} days don't book this year
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  )
+}
+
+function ColumnHeader({ visible, delay, label, accent }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 8 }}
+          transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
+          className="text-[10px] uppercase tracking-[0.28em] font-semibold whitespace-nowrap overflow-hidden"
+          style={{ color: accent ? 'var(--color-orange)' : 'rgba(255,255,255,0.4)' }}
+        >
+          {label}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
+function TierRow({ tier, index, inResponse, sizePct, winPct, cyclePct, cutoffPct, withinCutoff }) {
+  return (
+    <div
+      className="grid items-center gap-6 py-2 transition-[grid-template-columns] duration-700 ease-out"
+      style={{
+        gridTemplateColumns: inResponse
+          ? '46px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.4fr)'
+          : '46px minmax(0, 1fr) 0fr 0fr'
+      }}
+    >
+      {/* Tier label */}
+      <div className="text-[12px] uppercase tracking-[0.24em] text-white/55 font-semibold">
+        {tier.id}
+      </div>
+
+      {/* Deal size cell */}
+      <div className="flex items-center gap-3">
+        <div className="font-serif text-[18px] text-white w-16 shrink-0">{tier.sizeLabel}</div>
+        <div className="flex-1 h-3 bg-white/[0.05] rounded-sm overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${sizePct}%` }}
+            transition={{ duration: 0.85, delay: 0.15 + index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+            className="h-full"
+            style={{ background: 'linear-gradient(90deg, rgba(46,53,160,0.95), rgba(30,38,114,0.7))' }}
+          />
+        </div>
+      </div>
+
+      {/* Win rate cell */}
+      <CellSlideIn visible={inResponse} delay={0.15 + index * 0.06}>
+        <div className="flex items-center gap-3">
+          <div className="font-serif text-[18px] text-white w-12 shrink-0">{winPct}%</div>
+          <div className="flex-1 h-3 bg-white/[0.05] rounded-sm overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={inResponse ? { width: `${winPct}%` } : { width: 0 }}
+              transition={{ duration: 0.7, delay: 0.45 + index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              className="h-full"
+              style={{ background: 'rgba(255,255,255,0.7)' }}
+            />
+          </div>
+        </div>
+      </CellSlideIn>
+
+      {/* Cycle days cell - with 120-day cutoff coloring */}
+      <CellSlideIn visible={inResponse} delay={0.2 + index * 0.06}>
+        <div className="flex items-center gap-3">
+          <div className="font-serif text-[18px] w-14 shrink-0" style={{ color: withinCutoff ? 'var(--color-orange)' : 'rgba(239,69,55,0.85)' }}>
+            {tier.cycleDays}d
+          </div>
+          <div className="relative flex-1 h-3 bg-white/[0.05] rounded-sm overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={inResponse ? { width: `${cyclePct}%` } : { width: 0 }}
+              transition={{ duration: 0.85, delay: 0.5 + index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-0 left-0"
+              style={{
+                background: withinCutoff
+                  ? 'linear-gradient(90deg, var(--color-orange), rgba(250,168,64,0.5))'
+                  : 'linear-gradient(90deg, rgba(239,69,55,0.7), rgba(239,69,55,0.3))'
+              }}
+            />
+            {/* 120-day cutoff line within this row's cycle bar */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={inResponse ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.5, delay: 1.3 }}
+              className="absolute top-0 bottom-0 w-px"
+              style={{
+                left: `${cutoffPct}%`,
+                background: 'rgba(255,255,255,0.6)'
+              }}
+            />
+          </div>
+        </div>
+      </CellSlideIn>
+    </div>
+  )
+}
+
+function CellSlideIn({ visible, delay, children }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 12 }}
+          transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+          className="overflow-hidden"
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
