@@ -1,22 +1,35 @@
-import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { findings3, motions, dealTiers } from '../data.js'
 import StepGate from '../components/StepGate.jsx'
 import { DarkBackdrop } from '../components/AmbientBackdrop.jsx'
 import EyebrowStrap from '../components/EyebrowStrap.jsx'
 
-// Step choreography (one finding per click; each finding has a bespoke visual):
-// 0: hero only
-// 1-3: each finding takes the canvas as a large card with its own viz
+// Step choreography (sub-steps allow the speaker to click through phase changes):
+// 0: hero
+// 1: Finding 01 (auto-plays)
+// 2: Finding 02 phase=size (bars rise sorted by deal size)
+// 3: Finding 02 phase=score (click triggers re-rank by composite score)
+// 4: Finding 03 (auto-plays)
 const VIZ = [MotionCyclesViz, EfficiencyReorderViz, SeasonalityWaveViz]
+const SUB_STEPS = [1, 2, 1]  // sub-steps consumed by each card
 const ANNOTATION = [
   'One forecast averages two realities.',
   'Re-rank by yield, the inversion is sharp.',
   'Same peaks. Every year.'
 ]
 
+function locateCard(step) {
+  // step 0 is the hero; cards begin at step 1
+  let remaining = step - 1
+  for (let i = 0; i < SUB_STEPS.length; i++) {
+    if (remaining < SUB_STEPS[i]) return { cardIndex: i, subStep: Math.max(0, remaining) }
+    remaining -= SUB_STEPS[i]
+  }
+  return { cardIndex: SUB_STEPS.length - 1, subStep: SUB_STEPS[SUB_STEPS.length - 1] - 1 }
+}
+
 export default function Slide2({ step }) {
-  const cardIndex = Math.min(Math.max(step - 1, 0), findings3.length - 1)
+  const { cardIndex, subStep } = locateCard(step)
   const activeFinding = findings3[cardIndex]
   const ActiveViz = VIZ[cardIndex]
 
@@ -49,6 +62,7 @@ export default function Slide2({ step }) {
                   index={cardIndex}
                   total={findings3.length}
                   Viz={ActiveViz}
+                  subStep={subStep}
                   annotation={ANNOTATION[cardIndex]}
                 />
               </motion.div>
@@ -75,7 +89,7 @@ export default function Slide2({ step }) {
   )
 }
 
-function FindingCard({ finding, index, total, Viz, annotation }) {
+function FindingCard({ finding, index, total, Viz, subStep, annotation }) {
   return (
     <div className="relative h-full flex flex-col bg-white/[0.025] border border-white/10 rounded-sm px-14 py-10 overflow-hidden">
       <div
@@ -126,7 +140,7 @@ function FindingCard({ finding, index, total, Viz, annotation }) {
       />
 
       <div className="relative flex-1 mt-6 min-h-0">
-        <Viz />
+        <Viz subStep={subStep} />
       </div>
 
       <motion.div
@@ -226,13 +240,9 @@ function CycleBar({ label, days, widthPct, delay, color }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Finding 02: 5 vertical bars sorted by deal size, then re-sort by composite score.
 // ─────────────────────────────────────────────────────────────────────────────
-function EfficiencyReorderViz() {
-  const [phase, setPhase] = useState('size')
-
-  useEffect(() => {
-    const t = setTimeout(() => setPhase('score'), 1500)
-    return () => clearTimeout(t)
-  }, [])
+function EfficiencyReorderViz({ subStep = 0 }) {
+  // sub-step is driven by the parent slide click; subStep 0 = size, subStep 1 = score
+  const phase = subStep >= 1 ? 'score' : 'size'
 
   // Compute rank by current phase
   const sortedBySize = [...dealTiers].sort((a, b) => b.size - a.size)
@@ -279,7 +289,7 @@ function EfficiencyReorderViz() {
               animate={{
                 left: `${xPct}%`
               }}
-              transition={{ type: 'spring', stiffness: 140, damping: 22 }}
+              transition={{ type: 'spring', stiffness: 80, damping: 22, mass: 1.1 }}
               className="absolute bottom-0 -translate-x-1/2 flex flex-col items-center justify-end"
               style={{ width: `${slotPercent * 0.8}%`, height: '100%' }}
             >
@@ -323,7 +333,7 @@ function EfficiencyReorderViz() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.55, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
             className="text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold mt-3 text-center"
           >
             Highest yield per pursuit-hour

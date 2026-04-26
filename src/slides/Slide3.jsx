@@ -6,15 +6,26 @@ import { DarkBackdrop } from '../components/AmbientBackdrop.jsx'
 import EyebrowStrap from '../components/EyebrowStrap.jsx'
 import { SEASONALITY_VALUES, SEASONALITY_PEAKS } from './Slide2.jsx'
 
-// Step choreography (one shift per click; each shift transforms old→new):
+// Step choreography (sub-steps allow the speaker to click through phase changes):
 // 0: hero
-// 1: SEPARATE  - blended scorecard splits in two
-// 2: SCORE     - deal tiers re-rank by composite score
-// 3: SEQUENCE  - quarterly markers migrate to seasonality peaks (echoes Slide 2 Finding 03)
+// 1: SEPARATE  - blended scorecard splits in two (auto-plays)
+// 2: SCORE phase=size (tiers ranked by deal size)
+// 3: SCORE phase=score (click triggers re-rank by composite score)
+// 4: SEQUENCE - quarterly markers migrate to seasonality peaks (auto-plays)
 const VIZ = [SeparateSplitViz, ScoreReorderViz, SequenceMigrateViz]
+const SUB_STEPS = [1, 2, 1]
+
+function locateCard(step) {
+  let remaining = step - 1
+  for (let i = 0; i < SUB_STEPS.length; i++) {
+    if (remaining < SUB_STEPS[i]) return { cardIndex: i, subStep: Math.max(0, remaining) }
+    remaining -= SUB_STEPS[i]
+  }
+  return { cardIndex: SUB_STEPS.length - 1, subStep: SUB_STEPS[SUB_STEPS.length - 1] - 1 }
+}
 
 export default function Slide3({ step }) {
-  const cardIndex = Math.min(Math.max(step - 1, 0), shifts.length - 1)
+  const { cardIndex, subStep } = locateCard(step)
   const activeShift = shifts[cardIndex]
   const ActiveViz = VIZ[cardIndex]
 
@@ -47,6 +58,7 @@ export default function Slide3({ step }) {
                   index={cardIndex}
                   total={shifts.length}
                   Viz={ActiveViz}
+                  subStep={subStep}
                 />
               </motion.div>
             )}
@@ -72,7 +84,7 @@ export default function Slide3({ step }) {
   )
 }
 
-function ShiftCard({ shift, index, total, Viz }) {
+function ShiftCard({ shift, index, total, Viz, subStep }) {
   return (
     <div className="relative h-full flex flex-col bg-white/[0.025] border border-white/10 rounded-sm px-14 py-10 overflow-hidden">
       <div
@@ -123,7 +135,7 @@ function ShiftCard({ shift, index, total, Viz }) {
       />
 
       <div className="relative flex-1 mt-6 min-h-0">
-        <Viz shift={shift} />
+        <Viz shift={shift} subStep={subStep} />
       </div>
     </div>
   )
@@ -273,13 +285,9 @@ function Scorecard({ label, phase, color, metrics }) {
 // Shift 02 - SCORE: Deal tiers ranked by size, then re-ranked by composite score.
 // Uses the SAME dealTiers from Finding 02 so the inversion is visibly sharp.
 // ─────────────────────────────────────────────────────────────────────────────
-function ScoreReorderViz({ shift }) {
-  const [phase, setPhase] = useState('size')
-
-  useEffect(() => {
-    const t = setTimeout(() => setPhase('score'), 1400)
-    return () => clearTimeout(t)
-  }, [])
+function ScoreReorderViz({ shift, subStep = 0 }) {
+  // sub-step is driven by parent slide click; subStep 0 = size, subStep 1 = score
+  const phase = subStep >= 1 ? 'score' : 'size'
 
   const sortedBySize = [...dealTiers].sort((a, b) => b.size - a.size)
   const sortedByScore = [...dealTiers].sort((a, b) => b.score - a.score)
