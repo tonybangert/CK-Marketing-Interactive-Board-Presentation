@@ -1,48 +1,66 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { findings3, motions, dealTiers } from '../data.js'
+import { motions, dealTiers } from '../data.js'
 import StepGate from '../components/StepGate.jsx'
 import { DarkBackdrop } from '../components/AmbientBackdrop.jsx'
 import EyebrowStrap from '../components/EyebrowStrap.jsx'
 
-// Step choreography (sub-steps allow the speaker to click through phase changes):
+// Merged middle section: each beat carries the pattern AND the operational
+// shift on the same canvas. One click reveals the diagnosis, second click
+// transforms it into the response. Three beats. Six clicks.
+//
+// Step choreography (sub-steps drive in-card phase changes):
 // 0: hero
-// 1: Finding 01 (auto-plays)
-// 2: Finding 02 phase=size (bars rise sorted by deal size)
-// 3: Finding 02 phase=score (click triggers re-rank by composite score)
-// 4: Finding 03 (auto-plays)
-const VIZ = [MotionCyclesViz, EfficiencyReorderViz, SeasonalityWaveViz]
-const SUB_STEPS = [1, 2, 1]  // sub-steps consumed by each card
-const ANNOTATION = [
-  'One forecast averages two realities.',
-  'Re-rank by yield, the inversion is sharp.',
-  'Same peaks. Every year.'
+// 1: Beat 1 - Two motions, one blended forecast (diagnosis)
+// 2: Beat 1 - Each motion gets its own scorecard (response)
+// 3: Beat 2 - Efficiency hides behind deal size (diagnosis)
+// 4: Beat 2 - Re-rank by yield (response)
+// 5: Beat 3 - Buying rhythms are predictable (diagnosis)
+// 6: Beat 3 - Outreach syncs to the wave (response)
+const BEATS = [
+  {
+    id: '01',
+    pattern: 'Two motions, one blended forecast.',
+    shift: 'Each motion gets its own scorecard.',
+    Viz: MotionsBeatViz
+  },
+  {
+    id: '02',
+    pattern: 'Efficiency hides behind deal size.',
+    shift: 'Re-rank by yield, not size.',
+    Viz: EfficiencyBeatViz
+  },
+  {
+    id: '03',
+    pattern: 'Buying rhythms are predictable.',
+    shift: 'Outreach syncs to the wave.',
+    Viz: RhythmsBeatViz
+  }
 ]
+const SUB_STEPS = [2, 2, 2]
 
-function locateCard(step) {
-  // step 0 is the hero; cards begin at step 1
+function locateBeat(step) {
   let remaining = step - 1
   for (let i = 0; i < SUB_STEPS.length; i++) {
-    if (remaining < SUB_STEPS[i]) return { cardIndex: i, subStep: Math.max(0, remaining) }
+    if (remaining < SUB_STEPS[i]) return { beatIndex: i, subStep: Math.max(0, remaining) }
     remaining -= SUB_STEPS[i]
   }
-  return { cardIndex: SUB_STEPS.length - 1, subStep: SUB_STEPS[SUB_STEPS.length - 1] - 1 }
+  return { beatIndex: BEATS.length - 1, subStep: SUB_STEPS[SUB_STEPS.length - 1] - 1 }
 }
 
 export default function Slide2({ step }) {
-  const { cardIndex, subStep } = locateCard(step)
-  const activeFinding = findings3[cardIndex]
-  const ActiveViz = VIZ[cardIndex]
+  const { beatIndex, subStep } = locateBeat(step)
+  const activeBeat = BEATS[beatIndex]
 
   return (
     <div className="absolute inset-0 text-white overflow-hidden">
       <DarkBackdrop />
 
-      <EyebrowStrap label="Findings" crumb="Three patterns hidden in plain sight" />
+      <EyebrowStrap label="Patterns → Shifts" crumb="Three diagnoses. Three responses." />
 
       <div className="relative z-10 h-full flex flex-col px-12 pt-28 pb-14">
         <StepGate show={0} step={step}>
           <h1 className="font-serif text-[56px] leading-[1.04] text-white">
-            Three patterns hidden in plain sight.
+            Three patterns. Three operational shifts.
           </h1>
         </StepGate>
 
@@ -50,21 +68,14 @@ export default function Slide2({ step }) {
           <AnimatePresence mode="wait">
             {step >= 1 && (
               <motion.div
-                key={`finding-${cardIndex}`}
+                key={`beat-${beatIndex}`}
                 initial={{ opacity: 0, x: 60, filter: 'blur(10px)' }}
                 animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
                 exit={{ opacity: 0, x: -60, filter: 'blur(10px)' }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="absolute inset-0"
               >
-                <FindingCard
-                  finding={activeFinding}
-                  index={cardIndex}
-                  total={findings3.length}
-                  Viz={ActiveViz}
-                  subStep={subStep}
-                  annotation={ANNOTATION[cardIndex]}
-                />
+                <BeatCard beat={activeBeat} index={beatIndex} total={BEATS.length} subStep={subStep} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -72,13 +83,13 @@ export default function Slide2({ step }) {
 
         {step >= 1 && (
           <div className="mt-6 flex items-center justify-center gap-2.5">
-            {findings3.map((f, i) => (
+            {BEATS.map((b, i) => (
               <div
-                key={f.id}
+                key={b.id}
                 className="h-1 rounded-full transition-all duration-500"
                 style={{
-                  width: i === cardIndex ? 36 : 8,
-                  background: i <= cardIndex ? 'var(--color-orange)' : 'rgba(255,255,255,0.2)'
+                  width: i === beatIndex ? 36 : 8,
+                  background: i <= beatIndex ? 'var(--color-orange)' : 'rgba(255,255,255,0.2)'
                 }}
               />
             ))}
@@ -89,9 +100,12 @@ export default function Slide2({ step }) {
   )
 }
 
-function FindingCard({ finding, index, total, Viz, subStep, annotation }) {
+function BeatCard({ beat, index, total, subStep }) {
+  const inResponse = subStep >= 1
+  const Viz = beat.Viz
+
   return (
-    <div className="relative h-full flex flex-col bg-white/[0.025] border border-white/10 rounded-sm px-14 py-10 overflow-hidden">
+    <div className="relative h-full flex flex-col bg-white/[0.025] border border-white/10 rounded-sm px-14 py-9 overflow-hidden">
       <div
         className="absolute pointer-events-none"
         style={{
@@ -111,7 +125,7 @@ function FindingCard({ finding, index, total, Viz, subStep, annotation }) {
           className="flex items-center gap-3 text-[18px] uppercase tracking-[0.32em] font-semibold text-[var(--color-orange)]"
         >
           <span className="text-[24px] leading-none">▸</span>
-          <span>Finding</span>
+          <span>{inResponse ? 'Shift' : 'Pattern'}</span>
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
@@ -123,45 +137,51 @@ function FindingCard({ finding, index, total, Viz, subStep, annotation }) {
         </motion.div>
       </div>
 
-      <motion.h2
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="relative font-serif text-[48px] leading-[1.05] text-white max-w-[1100px]"
-      >
-        {finding.title}
-      </motion.h2>
+      {/* Headline crossfade: pattern -> shift */}
+      <div className="relative" style={{ minHeight: 120 }}>
+        <AnimatePresence mode="wait">
+          <motion.h2
+            key={inResponse ? 'shift' : 'pattern'}
+            initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -10, filter: 'blur(6px)' }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="font-serif text-[44px] leading-[1.05] text-white max-w-[1100px] absolute"
+          >
+            {inResponse ? (
+              <>
+                <span className="text-[var(--color-orange)]/80 mr-3">→</span>{beat.shift}
+              </>
+            ) : (
+              beat.pattern
+            )}
+          </motion.h2>
+        </AnimatePresence>
+      </div>
 
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.65, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mt-6 h-px w-20 origin-left bg-[var(--color-orange)]/50"
+        className="relative mt-2 h-px w-20 origin-left bg-[var(--color-orange)]/50"
       />
 
       <div className="relative flex-1 mt-6 min-h-0">
-        <Viz subStep={subStep} />
+        <Viz inResponse={inResponse} />
       </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.55, delay: 1.2 }}
-        className="relative mt-4 text-[14px] uppercase tracking-[0.32em] text-white/55 font-semibold"
-      >
-        {annotation}
-      </motion.div>
     </div>
   )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Finding 01: Two horizontal cycle bars + a "blended forecast" dashed marker.
+// Beat 1 - MOTIONS: Two cycle bars + blended forecast (diagnosis).
+//                   Click: blended line dissolves, motion-specific scorecard
+//                   metrics appear inside each bar (response).
 // ─────────────────────────────────────────────────────────────────────────────
-function MotionCyclesViz() {
-  const store = motions.store.cycleDays      // 203
-  const trans = motions.transactional.cycleDays // 80
-  const blend = Math.round((store + trans) / 2) // 141
+function MotionsBeatViz({ inResponse }) {
+  const store = motions.store.cycleDays
+  const trans = motions.transactional.cycleDays
+  const blend = Math.round((store + trans) / 2)
 
   const max = store
   const storeWidth = 100
@@ -169,51 +189,65 @@ function MotionCyclesViz() {
   const blendX = (blend / max) * 100
 
   return (
-    <div className="relative h-full flex flex-col justify-center gap-10 px-2">
-      <CycleBar
+    <div className="relative h-full flex flex-col justify-center gap-8 px-2">
+      <ScorecardBar
         label="Corporate Store"
         days={store}
         widthPct={storeWidth}
         delay={0.0}
         color="var(--color-concord-soft)"
+        inResponse={inResponse}
+        metrics={[80, 65, 72]}
       />
-      <CycleBar
+      <ScorecardBar
         label="Multi-Location"
         days={trans}
         widthPct={transWidth}
         delay={0.15}
         color="var(--color-ck-green-soft)"
+        inResponse={inResponse}
+        metrics={[58, 88, 70]}
       />
 
-      {/* Blended forecast vertical line */}
-      <motion.div
-        initial={{ opacity: 0, scaleY: 0 }}
-        animate={{ opacity: 1, scaleY: 1 }}
-        transition={{ duration: 0.7, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute pointer-events-none"
-        style={{
-          left: `calc(${blendX}% + 0px)`,
-          top: 0,
-          bottom: 28,
-          width: 0,
-          borderLeft: '1.5px dashed rgba(255,255,255,0.55)',
-          transformOrigin: 'top'
-        }}
-      />
-      <motion.div
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, delay: 1.0 }}
-        className="absolute text-[11px] uppercase tracking-[0.32em] font-semibold text-white/75 whitespace-nowrap"
-        style={{ left: `${blendX}%`, top: '-8px', transform: 'translateX(-50%)' }}
-      >
-        Blended forecast · {blend} days
-      </motion.div>
+      {/* Blended forecast line - present in diagnosis, dissolves on response */}
+      <AnimatePresence>
+        {!inResponse && (
+          <>
+            <motion.div
+              key="blend-line"
+              initial={{ opacity: 0, scaleY: 0 }}
+              animate={{ opacity: 1, scaleY: 1 }}
+              exit={{ opacity: 0, scaleY: 0 }}
+              transition={{ duration: 0.7, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute pointer-events-none"
+              style={{
+                left: `calc(${blendX}% + 0px)`,
+                top: 24,
+                bottom: 24,
+                width: 0,
+                borderLeft: '1.5px dashed rgba(255,255,255,0.55)',
+                transformOrigin: 'top'
+              }}
+            />
+            <motion.div
+              key="blend-label"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.55, delay: 1.0 }}
+              className="absolute text-[11px] uppercase tracking-[0.32em] font-semibold text-white/75 whitespace-nowrap"
+              style={{ left: `${blendX}%`, top: 0, transform: 'translateX(-50%)' }}
+            >
+              Blended forecast · {blend} days
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
-function CycleBar({ label, days, widthPct, delay, color }) {
+function ScorecardBar({ label, days, widthPct, delay, color, inResponse, metrics }) {
   return (
     <div className="relative">
       <div className="flex items-baseline justify-between mb-2">
@@ -224,39 +258,79 @@ function CycleBar({ label, days, widthPct, delay, color }) {
           {days} <span className="text-[13px] text-white/55 font-sans">days</span>
         </div>
       </div>
-      <div className="relative h-6 bg-white/[0.04] border border-white/10 rounded-sm overflow-hidden">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${widthPct}%` }}
-          transition={{ duration: 1.0, delay, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-y-0 left-0"
-          style={{ background: color }}
-        />
+
+      <div className="relative">
+        {/* Cycle bar (always present) */}
+        <div className="relative h-6 bg-white/[0.04] border border-white/10 rounded-sm overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${widthPct}%` }}
+            transition={{ duration: 1.0, delay, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-y-0 left-0"
+            style={{ background: color }}
+          />
+        </div>
+
+        {/* Scorecard metrics - appear in response state */}
+        <AnimatePresence>
+          {inResponse && (
+            <motion.div
+              key="metrics"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 grid grid-cols-3 gap-4">
+                {['Win rate', 'Cycle', 'Expansion'].map((m, i) => (
+                  <motion.div
+                    key={m}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, delay: 0.2 + i * 0.08 }}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="text-[9px] uppercase tracking-[0.18em] text-white/45 font-semibold w-16">{m}</div>
+                    <div className="flex-1 h-1.5 bg-black/30 rounded-sm overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${metrics[i]}%` }}
+                        transition={{ duration: 0.6, delay: 0.3 + i * 0.08 }}
+                        className="h-full"
+                        style={{ background: color }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-white/65 w-6 text-right font-mono">{metrics[i]}</div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Finding 02: 5 vertical bars sorted by deal size, then re-sort by composite score.
+// Beat 2 - EFFICIENCY: 5 deal tiers sorted by deal size (diagnosis).
+//                      Click: tiers re-rank by composite score, top tier glows
+//                      orange, composite sub-bars appear (response).
 // ─────────────────────────────────────────────────────────────────────────────
-function EfficiencyReorderViz({ subStep = 0 }) {
-  // sub-step is driven by the parent slide click; subStep 0 = size, subStep 1 = score
-  const phase = subStep >= 1 ? 'score' : 'size'
+function EfficiencyBeatViz({ inResponse }) {
+  const phase = inResponse ? 'score' : 'size'
 
-  // Compute rank by current phase
   const sortedBySize = [...dealTiers].sort((a, b) => b.size - a.size)
   const sortedByScore = [...dealTiers].sort((a, b) => b.score - a.score)
   const order = phase === 'size' ? sortedBySize : sortedByScore
 
   const slotCount = dealTiers.length
   const slotPercent = 100 / slotCount
-
   const maxSize = Math.max(...dealTiers.map(t => t.size))
 
   return (
     <div className="relative h-full flex flex-col px-2">
-      {/* Phase label */}
       <div className="flex items-baseline justify-between mb-3">
         <AnimatePresence mode="wait">
           <motion.div
@@ -276,7 +350,6 @@ function EfficiencyReorderViz({ subStep = 0 }) {
         </div>
       </div>
 
-      {/* Bars container */}
       <div className="relative flex-1 min-h-0">
         {dealTiers.map((tier) => {
           const slotIndex = order.findIndex(t => t.id === tier.id)
@@ -286,9 +359,7 @@ function EfficiencyReorderViz({ subStep = 0 }) {
           return (
             <motion.div
               key={tier.id}
-              animate={{
-                left: `${xPct}%`
-              }}
+              animate={{ left: `${xPct}%` }}
               transition={{ type: 'spring', stiffness: 80, damping: 22, mass: 1.1 }}
               className="absolute bottom-0 -translate-x-1/2 flex flex-col items-center justify-end"
               style={{ width: `${slotPercent * 0.8}%`, height: '100%' }}
@@ -326,7 +397,6 @@ function EfficiencyReorderViz({ subStep = 0 }) {
         })}
       </div>
 
-      {/* Caption */}
       <AnimatePresence>
         {phase === 'score' && (
           <motion.div
@@ -345,17 +415,18 @@ function EfficiencyReorderViz({ subStep = 0 }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Finding 03: 12-month seasonality wave with peak markers + repeating year 2.
-// Shape is shared with Slide 3 SEQUENCE viz (deliberate echo).
+// Beat 3 - RHYTHMS: 12-month seasonality wave with peak markers (diagnosis).
+//                   Click: 4 fire-window markers slide in, anchored 60-90d
+//                   before each peak (response).
 // ─────────────────────────────────────────────────────────────────────────────
 export const SEASONALITY_VALUES = [0.85, 0.32, 0.55, 0.78, 0.92, 0.42, 0.28, 0.58, 0.48, 0.95, 0.40, 0.50]
 export const SEASONALITY_PEAKS = [0, 3, 4, 9] // Jan, Apr, May, Oct
 
-function SeasonalityWaveViz() {
+function RhythmsBeatViz({ inResponse }) {
   const W = 1000
-  const H = 220
+  const H = 240
   const padX = 30
-  const padY = 20
+  const padY = 30
   const stepX = (W - padX * 2) / (SEASONALITY_VALUES.length - 1)
   const months = ['J','F','M','A','M','J','J','A','S','O','N','D']
 
@@ -364,42 +435,33 @@ function SeasonalityWaveViz() {
     y: padY + (1 - v) * (H - padY * 2),
     v
   }))
-
-  // Smooth path through points (Catmull-Rom-ish via cubic bezier)
   const linePath = catmullRom(points)
+
+  // Fire-window positions: 60-90 days before each peak
+  const fireXs = [
+    padX + 10.7 * stepX,  // Nov  -> Jan peak
+    padX + 1.4 * stepX,   // Feb  -> Apr peak
+    padX + 2.4 * stepX,   // Mar  -> May peak
+    padX + 7.2 * stepX    // Aug  -> Oct peak
+  ]
 
   return (
     <div className="relative h-full flex flex-col">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet" style={{ flex: 1 }}>
         <defs>
-          <linearGradient id="wave-fill" x1="0" x2="0" y1="0" y2="1">
+          <linearGradient id="beat-wave-fill" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="var(--color-orange)" stopOpacity="0.32" />
             <stop offset="100%" stopColor="var(--color-orange)" stopOpacity="0" />
           </linearGradient>
         </defs>
 
-        {/* Year 2 echo (faded) */}
-        <motion.path
-          d={linePath}
-          fill="none"
-          stroke="rgba(255,255,255,0.18)"
-          strokeWidth="1"
-          strokeDasharray="3 4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 1.9 }}
-        />
-
-        {/* Year 1 fill */}
         <motion.path
           d={`${linePath} L ${points[points.length - 1].x} ${H - padY} L ${points[0].x} ${H - padY} Z`}
-          fill="url(#wave-fill)"
+          fill="url(#beat-wave-fill)"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.0 }}
         />
-
-        {/* Year 1 line */}
         <motion.path
           d={linePath}
           fill="none"
@@ -412,7 +474,7 @@ function SeasonalityWaveViz() {
           transition={{ duration: 1.4, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         />
 
-        {/* Peak markers */}
+        {/* Peak dots */}
         {points.map((p, i) => {
           if (!SEASONALITY_PEAKS.includes(i)) return null
           return (
@@ -425,17 +487,6 @@ function SeasonalityWaveViz() {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 1.4 + i * 0.05 }}
-              />
-              <motion.circle
-                cx={p.x}
-                cy={p.y}
-                r={12}
-                fill="none"
-                stroke="var(--color-orange)"
-                strokeWidth="1"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: [0, 1.5, 1.2], opacity: [0, 0.6, 0.25] }}
-                transition={{ duration: 1.0, delay: 1.4 + i * 0.05 }}
               />
               <motion.text
                 x={p.x}
@@ -454,9 +505,52 @@ function SeasonalityWaveViz() {
             </g>
           )
         })}
+
+        {/* Fire-window markers - appear in response state */}
+        <AnimatePresence>
+          {inResponse && fireXs.map((x, i) => (
+            <g key={i}>
+              <motion.line
+                initial={{ opacity: 0, y2: padY - 4 + 30 }}
+                animate={{ opacity: 1, y2: padY - 4 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.55, delay: 0.1 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                x1={x}
+                x2={x}
+                y1={H - padY}
+                stroke="var(--color-orange)"
+                strokeWidth="2"
+              />
+              <motion.circle
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                cx={x}
+                cy={padY - 4}
+                r={5}
+                fill="var(--color-orange)"
+              />
+              <motion.text
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}
+                x={x}
+                y={padY - 14}
+                textAnchor="middle"
+                fontSize="10"
+                fontWeight="700"
+                fill="var(--color-orange)"
+                style={{ letterSpacing: '0.18em', textTransform: 'uppercase' }}
+              >
+                Fire
+              </motion.text>
+            </g>
+          ))}
+        </AnimatePresence>
       </svg>
 
-      {/* Month ruler */}
       <div className="grid grid-cols-12 px-[3%] mt-2 text-[11px] uppercase tracking-wider font-semibold text-center">
         {months.map((m, i) => (
           <motion.div
@@ -470,11 +564,24 @@ function SeasonalityWaveViz() {
           </motion.div>
         ))}
       </div>
+
+      <AnimatePresence>
+        {inResponse && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.55, delay: 0.7 }}
+            className="text-[12px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold mt-3 text-center"
+          >
+            Reps coach to cycle · Marketing fires 60-90d ahead
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
-// Smooth catmull-rom-style spline through points
 function catmullRom(pts) {
   if (pts.length < 2) return ''
   let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`

@@ -3,7 +3,6 @@ import Slide0 from './slides/Slide0.jsx'
 import Slide1Unify from './slides/Slide1Unify.jsx'
 import Slide1 from './slides/Slide1.jsx'
 import Slide2 from './slides/Slide2.jsx'
-import Slide3 from './slides/Slide3.jsx'
 import Slide4 from './slides/Slide4.jsx'
 import Slide5 from './slides/Slide5.jsx'
 import SlideThankYou from './slides/SlideThankYou.jsx'
@@ -17,11 +16,10 @@ const SLIDES = [
   { id: 0, label: 'Cover',                  component: Slide0,      steps: 0, hideFooter: true, hideSpine: true },
   { id: 1, label: 'How it works',           component: Slide1Unify, steps: 0, hideFooter: true, hideSpine: true },
   { id: 2, label: 'Live product',           component: Slide1,      steps: 1, hideFooter: true, hideSpine: true },
-  { id: 3, label: 'Findings',               component: Slide2,      steps: 4, hideFooter: true },
-  { id: 4, label: 'Operational shifts',     component: Slide3,      steps: 5, hideFooter: true },
-  { id: 5, label: 'Roadmap',                component: Slide4,      steps: 3, hideFooter: true },
-  { id: 6, label: 'Engagement',             component: Slide5,      steps: 0, hideFooter: true, hideSpine: true },
-  { id: 7, label: 'Thank you',              component: SlideThankYou, steps: 0, hideFooter: true, hideSpine: true }
+  { id: 3, label: 'Patterns + Shifts',      component: Slide2,      steps: 6, hideFooter: true },
+  { id: 4, label: 'Roadmap',                component: Slide4,      steps: 3, hideFooter: true },
+  { id: 5, label: 'Engagement',             component: Slide5,      steps: 0, hideFooter: true, hideSpine: true },
+  { id: 6, label: 'Thank you',              component: SlideThankYou, steps: 0, hideFooter: true, hideSpine: true }
 ]
 
 const slideVariants = {
