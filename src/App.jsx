@@ -17,9 +17,9 @@ const SLIDES = [
   { id: 0, label: 'Cover',                  component: Slide0,      steps: 0, hideFooter: true, hideSpine: true },
   { id: 1, label: 'How it works',           component: Slide1Unify, steps: 0, hideFooter: true, hideSpine: true },
   { id: 2, label: 'Live product',           component: Slide1,      steps: 1, hideFooter: true, hideSpine: true },
-  { id: 3, label: 'What the AI revealed',   component: Slide2,      steps: 4, hideFooter: true },
-  { id: 4, label: "What we're doing",       component: Slide3,      steps: 5, hideFooter: true },
-  { id: 5, label: "What's next",            component: Slide4,      steps: 3, hideFooter: true },
+  { id: 3, label: 'Findings',               component: Slide2,      steps: 4, hideFooter: true },
+  { id: 4, label: 'Operational shifts',     component: Slide3,      steps: 5, hideFooter: true },
+  { id: 5, label: 'Roadmap',                component: Slide4,      steps: 3, hideFooter: true },
   { id: 6, label: 'Engagement',             component: Slide5,      steps: 0, hideFooter: true, hideSpine: true },
   { id: 7, label: 'Thank you',              component: SlideThankYou, steps: 0, hideFooter: true, hideSpine: true }
 ]

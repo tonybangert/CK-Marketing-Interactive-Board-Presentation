@@ -37,7 +37,7 @@ export default function Slide1Unify() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           className="font-serif text-[56px] leading-[1.04] text-white"
         >
-          How it works.
+          Three systems, one source of truth.
         </motion.h1>
 
         {/* Diagram zone */}

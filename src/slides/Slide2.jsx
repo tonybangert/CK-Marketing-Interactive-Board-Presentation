@@ -42,7 +42,7 @@ export default function Slide2({ step }) {
       <div className="relative z-10 h-full flex flex-col px-12 pt-28 pb-14">
         <StepGate show={0} step={step}>
           <h1 className="font-serif text-[56px] leading-[1.04] text-white">
-            What the AI revealed.
+            Three patterns hidden in plain sight.
           </h1>
         </StepGate>
 
