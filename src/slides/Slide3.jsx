@@ -8,12 +8,13 @@ import { SEASONALITY_VALUES, SEASONALITY_PEAKS } from './Slide2.jsx'
 
 // Step choreography (sub-steps allow the speaker to click through phase changes):
 // 0: hero
-// 1: SEPARATE  - blended scorecard splits in two (auto-plays)
+// 1: SEPARATE - blended scorecard splits in two (auto-plays)
 // 2: SCORE phase=size (tiers ranked by deal size)
 // 3: SCORE phase=score (click triggers re-rank by composite score)
-// 4: SEQUENCE - quarterly markers migrate to seasonality peaks (auto-plays)
+// 4: SEQUENCE phase=quarterly (4 evenly-spaced markers, faded wave)
+// 5: SEQUENCE phase=aligned (click triggers markers migrating to peak alignment)
 const VIZ = [SeparateSplitViz, ScoreReorderViz, SequenceMigrateViz]
-const SUB_STEPS = [1, 2, 1]
+const SUB_STEPS = [1, 2, 2]
 
 function locateCard(step) {
   let remaining = step - 1
@@ -397,13 +398,9 @@ function ScoreReorderViz({ shift, subStep = 0 }) {
 // Shift 03 - SEQUENCE: Quarterly markers migrate from evenly-spaced to peak-aligned.
 // Echoes Slide 2 Finding 03's seasonality wave (faded version below).
 // ─────────────────────────────────────────────────────────────────────────────
-function SequenceMigrateViz({ shift }) {
-  const [phase, setPhase] = useState('quarterly')
-
-  useEffect(() => {
-    const t = setTimeout(() => setPhase('aligned'), 1300)
-    return () => clearTimeout(t)
-  }, [])
+function SequenceMigrateViz({ shift, subStep = 0 }) {
+  // sub-step is driven by parent slide click; subStep 0 = quarterly, subStep 1 = aligned
+  const phase = subStep >= 1 ? 'aligned' : 'quarterly'
 
   const W = 1000
   const H = 200
