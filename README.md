@@ -1,221 +1,205 @@
-[CK_Revenue_Intelligence_Briefing (1).md](https://github.com/user-attachments/files/27066618/CK_Revenue_Intelligence_Briefing.1.md)
-# CK-Marketing-Interactive-Board-Presentation# CK Marketing Revenue Intelligence Briefing
+# CK Marketing Revenue Intelligence Briefing
 
-**Client:** CK Marketing (Clayton Kendall + Concord, post-merger)
-**Delivered by:** PerformanceLabs.AI × Aplora.AI
-**Format:** 4-slide executive briefing deck
-**Delivery date:** April 24, 2026
-
----
-
-## The Strategic Frame
-
-The Clayton Kendall + Concord merger is an industry-redefining bet. Two companies brought together so that Multi-Location (transactional pipeline, Clayton Kendall legacy) and Corporate Store (store pipeline, Concord legacy) operate as one full-spectrum buyer motion no single-motion competitor can match. The Herc + Sunbelt playbook applied to marketing services.
-
-The deck is not a consulting deliverable. It is the proof that the merger thesis is right, and the operating blueprint to realize it.
+**Client:** CK Marketing (Clayton Kendall + Concord Marketing, post-merger)
+**Delivered by:** PerformanceLabs.AI × Aplora
+**Audience:** The Board of Directors
+**Format:** Interactive 7-slide web presentation (Vite + React)
+**Status:** Production. Deployed via Vercel on push to `main`.
 
 ---
 
-## The Narrative Arc
+## What this is
 
-**Slide 1 · How we did it** — The intelligence layer behind the merger. Three revenue systems unified into one queryable spine. Proof that CK's data problem is already solved.
+A live, click-through board presentation built as a Vite + React single-page app. Each slide is composed of bespoke animated visualizations driven by a step-by-step reveal system, so the presenter controls pacing in real time during the meeting.
 
-**Slide 2 · What it told us** — Five structural findings, every one of them visible only because both legacy books are now speaking the same language.
-
-**Slide 3 · How we make it actionable** — The specific decisions that change when the business is operated as two motions, not one. Rep behavior, marketing behavior, revenue math.
-
-**Slide 4 · What comes next** — The always-on engine. Dynamic Revenue Calendar and Automated QBR Agent. The merger keeps compounding once the engine keeps running.
+This is not a slide deck exported to images or PDF — every chart, every transformation, every typographic morph is rendered live in the browser at 60fps via Framer Motion + SVG.
 
 ---
 
-## Slide-by-Slide Content
+## Narrative arc
 
-### Slide 1 — How We Did It
+The deck argues a single thesis in four moves: **the data is unified, the product is real, the patterns are responses, the roadmap is concrete.** Each move is exactly one slide.
 
-**Hero:** Two companies. One data spine.
-**Sub:** Answers in seconds, not quarters.
-**Frame:** The post-merger data problem, solved. Clayton Kendall and Concord ecosystems unified into one queryable intelligence layer.
+| # | Slide | Hero | What it does |
+|---|---|---|---|
+| 0 | Cover | `Revenue Intelligence.` | Brand opener: CK logo, partnership strap, prepared-for footer |
+| 1 | How it works | `Three systems, one source of truth.` | Animated convergence diagram: HubSpot · Finance · Sales Data → "One Source of Truth" box, lines drawing in over 3 seconds |
+| 2 | Live product | `Live now.` | Real product proof: HubSpot dashboard demo (pipeline by stage, monthly revenue trend) → click → Executive Advisor chat with two named-account Q&A turns powered by Claude |
+| 3 | Patterns + Shifts | `Three patterns. Three operational shifts.` | The argument's center of gravity. Three paired diagnosis→response beats, one click reveals each pattern, second click transforms it into the operational response on the same canvas |
+| 4 | Roadmap | `From insight to deployment.` | Interactive Dynamic Revenue Calendar showing buying-window peaks across both motions + two-card roadmap (Market Intelligence / Rep Specialization) |
+| 5 | Engagement | (mic-drop sentence) | "The revenue target doesn't change. The confidence in hitting it does." Single-sentence resting state |
+| 6 | Thank you | `Thank you.` | Partnership closer with PerformanceLabs.AI + Aplora.AI lockup |
 
-**Left column — Three Revenue Systems, One Spine**
-- HubSpot (pipeline & activity)
-- Finance (budget, forecast, actuals)
-- Transactions (historical orders & accounts)
-
-**Proof stats:** $7.1M active pipeline · 96 live deals · 65K contacts unified
-
-**Right column — The Live Intelligence Product**
-- Dashboard screenshot (Hello Tony / $7.1M / 96 deals)
-- Executive Advisor screenshot answering the velocity question
-- Store pipeline: 203 days · $148.4M
-- Transactional: 80 days · $22.8M
-
-**Bottom ribbon:** Connect → Vectorize → Interrogate → Deliver
+End-to-end: ~13 clicks, 5–6 minutes of presenter time.
 
 ---
 
-### Slide 2 — What It Told Us (Five Findings)
+## The Patterns + Shifts middle section (Slide 3)
 
-**Hero:** Five truths only the combined business can see.
-**Sub:** Clayton Kendall + Concord data, unified. The merger thesis, evidenced.
+The deck's load-bearing slide. Six clicks across three beats; each beat shows the pattern, then transforms into the shift on the same canvas:
 
-**Finding 01 — Two motions. One combined advantage.**
-- Corporate Store (Concord legacy): $609K avg deal · 203-day cycle · 224 deals · $148.4M
-- Multi-Location (Clayton Kendall legacy): $37K avg deal · 80-day cycle · 530 deals · $22.8M
-- Framing: *One roof. Two economic engines. Full-spectrum buyer coverage.*
+**Beat 01 — Two motions, one blended forecast → Each motion gets its own scorecard**
+- Two horizontal cycle bars (Corporate Store · 203 days · concord blue, Multi-Location · 80 days · CK green)
+- Pattern: a dashed white "Blended forecast · 142 days" line cuts between them
+- Shift (click): blended line dissolves; each bar gains motion-specific scorecard metrics (Win rate / Cycle / Expansion) inline
 
-**Finding 02 — Composite scoring. Cross-sell unlocked.**
-Top 3 verticals per pipeline across 41 pursued:
-- Composite: Construction, Financial, Consumer
-- Store: Construction, Financial, Insurance
-- Transactional: Real Estate, Consumer, Construction
-- Anchor stats: Accounting 57% win rate · highest yield per pursuit-hour · Construction 41.7% win · $14.4M volume
+**Beat 02 — Deal size alone is one dimension → Win rate and speed to close shape the year**
+- Five tier rows (T1–T5, $1.2M → $48K) ordered by deal size
+- Pattern: only the Deal Size column is visible
+- Shift (click): two new columns slide in (Win Rate, Cycle Days). Tier order never changes — no inversion drama.
+- A 120-day cutoff line in the cycle column with green/red coloring on either side delivers the punchline: *cycles over 120 days don't book this year*
 
-**Finding 03 — Buyers run on rhythms, not quarters.**
-- 12-month peak/trough chart
-- Jan +$1.22M · Apr +$353K · Oct +$1.12M net swings
-- May cluster: 7 accounts, $3.4M annual spend
-- 43 peaks · 43 troughs · calendar QBRs miss both
+**Beat 03 — Buying rhythms are predictable → Outreach syncs to the wave**
+- 12-month seasonality wave with peak markers at Jan, Apr, May, Oct
+- Shift (click): four orange "Fire" markers slide in 60–90 days before each peak, anchored to the wave's geometry
+- Caption: *Reps coach to cycle · Marketing fires 60-90d ahead*
 
-**Finding 04 — 38K sleeper contacts, visible across both legacies.**
-- 58% of 65K contacts inactive
-- Reactivation Route: T1 Sales outreach / T2 Nurture sequences / T3 Purge
-
-**Finding 05 — Hygiene is where merger forecast risk lives.**
-- 5-10% stage & naming mismatch across legacy systems
-- 7-figure unattributed revenue, quietly
-
-**Finding 06 / Summary tile — The merger thesis, evidenced.**
-Two motions. Composite ICP. Timed to rhythm. Visible across both books. Measured on hygiene. Forecast confidence compounds when the business is seen as it actually is.
+The visual echo across beats — same data shapes the pattern AND the response — is deliberate. The audience reads the diagnosis and the response in the same coordinate system, on the same canvas.
 
 ---
 
-### Slide 3 — How We Make It Actionable
-
-**Hero:** Same target. Sharper aim. Higher probability.
-**Sub:** The merger pays off when reps and marketing operate on two rhythms, not one.
-
-**The Revenue Math of Operating the Thesis Correctly** (+10% lift per motion, timed against buyer rhythms)
-- Corporate Store · +10%: **+$376K** (Concord legacy · $148.4M base)
-- Multi-Location · +10%: **+$18.2K** (Clayton Kendall legacy · $22.8M base)
-- Combined annualized lift: **+$394.2K** (share of wallet, timed 60-90 days ahead of peak)
-
-**How Reps Spend Time**
-- Corporate Store reps coached to 203-day cycle with multi-stakeholder playbooks. No penalty for patience.
-- Multi-Location reps coached to 80-day cycle with volume-efficient cadence.
-- 70% of pursuit hours concentrated on top 5 composite verticals.
-- End-to-end cycle mapped so reps and managers know what "on track" looks like in each motion.
-
-**How Marketing Fires**
-- QBRs sequenced 60-90 days ahead of each segment's peak month.
-- Spend weighted to April, May, October (highest net swing months).
-- Cross-sell campaigns fire when Multi-Location accounts enter Corporate Store signals, and vice versa.
-- Dual dashboards: marketing tracks two motions, two calendars, one combined revenue goal.
-
-**Decision Rhythm Strip**
-- Weekly: Hygiene score as leadership KPI
-- Monthly: ICP reallocation across the combined book
-- Quarterly: Dual-pipeline forecast · seasonality-led QBRs
-- Annually: Territory & headcount modeled from composite map
-
----
-
-### Slide 4 — What Comes Next
-
-**Hero:** From quarterly snapshot to always-on engine.
-**Sub:** The merger keeps compounding once the engine keeps running.
-
-**Dynamic Revenue Calendar** — Dual-motion. Account-aware. Always current.
-- 12-month visual calendar with two segment rows
-- Corporate Store peaks: Jan · Apr · Oct
-- Multi-Location peaks: Mar · May · Aug · Oct
-- QBR fire windows indicator row (60-90 days ahead of each peak)
-
-**Automated QBR Agent** — Every QBR fires at the window the buyer is already opening.
-01. Reads account history (every buying pattern, across both legacy systems)
-02. Pulls market context (segment-specific trends, competitor signals)
-03. Builds the QBR framework (motion-aware · Corporate Store vs Multi-Location)
-04. Delivers 90 days ahead (to the rep, before the peak window opens)
-
-**Forecast Confidence band**
-- **$97.1M · 2026 Target · Holds**
-- Today: wide interval. After: narrowed, tighter, more probable.
-- *The number does not change. The probability of hitting it does.*
-
----
-
-## Brand System Applied
+## Brand system
 
 | Element | Spec |
 |---|---|
-| Primary color | Navy `#102D50` (dominant ~65%) |
-| Signal accent | Orange `#FAA840` |
-| Alert accent | Red `#EF4537` |
-| Surface / light | Cream `#F6F1E8` and cream-soft `#FBF8F2` |
-| Background | White `#FFFFFF` |
-| Headline font | DM Serif Display |
-| Body font | DM Sans |
-| Rule color | `#D9D1C0` |
-| Muted text | `#6B7A8F` |
-| Slide size | 16:9 wide (13.33" × 7.5") |
-| Em dashes | None (brand standard) |
+| Primary canvas | Dark navy `#0A0F1A` (DarkBackdrop), navy radial accents on Live product slide |
+| Signal accent | Orange `#FAA840` (used sparingly: ● dot, "TO" labels, peak markers, headline period) |
+| Concord brand | Blue `#1E2672` / soft `#2B35A0` (Corporate Store motion) |
+| Clayton Kendall brand | Green `#225F4C` / soft `#2E8066` (Multi-Location motion) |
+| Headline font | DM Serif Display (44–88px on hero slides) |
+| Body font | DM Sans (11–24px) |
+| Slide aspect | 16:9 (locked via CSS `aspect-ratio`) |
+| Em dashes | None (brand standard, enforced by `npm run lint:emdash`) |
 
 ---
 
-## Key Data Anchors
+## Data anchors used in the deck
 
-| Metric | Value |
-|---|---|
-| 2026 revenue target | $97.1M ($97,114,598) |
-| Active pipeline | $7.1M |
-| Active deals | 96 |
-| Contacts unified | 65K |
-| Inactive contact % | 58% (38K of 65K) |
-| Corporate Store avg deal | $609K |
-| Corporate Store cycle | 203 days |
-| Corporate Store volume | 224 deals · $148.4M |
-| Multi-Location avg deal | $37K |
-| Multi-Location cycle | 80 days |
-| Multi-Location volume | 530 deals · $22.8M |
-| Composite Top 3 verticals | Construction · Financial · Consumer |
-| Store Top 3 verticals | Construction · Financial · Insurance |
-| Transactional Top 3 verticals | Real Estate · Consumer · Construction |
-| Accounting win rate | 57% · highest yield per hour |
-| Construction win rate | 41.7% · $14.4M volume |
-| May cluster | 7 accounts · $3.4M annual spend |
-| Top seasonality swings | Jan +$1.22M · Apr +$353K · Oct +$1.12M |
-| Peak/trough count (annual) | 43 peaks · 43 troughs |
-| Hygiene mismatch range | 5-10% stage & naming |
-| Forecast at risk | 7-figure unattributed |
-| +10% lift, Corporate Store | +$376K |
-| +10% lift, Multi-Location | +$18.2K |
-| Combined annualized lift | +$394.2K |
+| Metric | Value | Where it appears |
+|---|---|---|
+| 2026 revenue target | $97.1M | Implied in Engagement closer |
+| Active pipeline | $7.1M | Slide 2 dashboard hero |
+| Active deals | 96 | Slide 2 dashboard hero |
+| Corporate Store cycle | 203 days | Slide 3 Beat 01 |
+| Multi-Location cycle | 80 days | Slide 3 Beat 01 |
+| Blended forecast (averaged) | 142 days | Slide 3 Beat 01 |
+| Tier composite scores | 18% – 86% win rate, 60d – 240d cycle | Slide 3 Beat 02 |
+| Cycle cutoff for current-year recognition | 120 days | Slide 3 Beat 02 callout |
+| Seasonality peaks | Jan · Apr · May · Oct | Slide 3 Beat 03, Slide 4 calendar |
+| Fire-window timing | 60–90 days ahead of peak | Slide 3 Beat 03, Slide 4 calendar |
+| Named example accounts | Herc Rentals · Country Financial · Wetzels | Slide 2 Executive Advisor demo |
 
 ---
 
-## Source Materials
+## Tech stack
 
-| Input | Use |
-|---|---|
-| `CK_Marketing_Exec_Briefing.pdf` (3-page executive briefing) | Structural facts, original five findings, operating cadence |
-| `Revenue_Intelligence_-_3_Actionable_Revenue_Findings.pptx` | Prior deck, reused some framing language (Connect/Vectorize/Interrogate/Deliver), expanded from 3 to 5 findings |
-| Dashboard screenshot | Slide 1 right column (live product proof) |
-| Executive Advisor screenshot | Slide 1 right column (live product proof) |
-| Peak/trough seasonality table screenshot | Slide 2 Finding 03 chart source data |
-| Tony's session notes | Industry specifics (Top 3 per pipeline), revenue math anchors, merger narrative, $97.1M target |
-
----
-
-## Build Notes
-
-- Built with pptxgenjs. Single source file (`build.js`) produces the full deck from icons, shapes, and text blocks. No templates.
-- All chart visuals (seasonality bars on slide 2, calendar grid on slide 4, forecast confidence bars on slide 4) built from native PowerPoint shapes so they remain editable.
-- Icons rendered from react-icons and rasterized to PNG at 256px for crisp display at any projection size.
-- Slide 1 and Slide 4 use mixed-tone layouts (dark hero cards offset against light surfaces). Slide 2 uses an asymmetric 2x3 grid — taller row on top for content-dense findings, shorter row below for summary cards. Slide 3 uses a three-band horizontal composition (math band / behavior columns / rhythm strip).
-- Four-page structured footer across all slides: `PerformanceLabs.AI × Aplora.AI` left · section label center · page count right. Hairline rule above footer.
-- QA: Visual inspection completed, no overflow, no placeholder text, zero em dashes.
+- **Framework:** Vite 5 + React 18
+- **Styling:** Tailwind CSS v4 (`@tailwindcss/vite`)
+- **Animation:** Framer Motion 12 (AnimatePresence, motion.path, springs)
+- **Charts/diagrams:** raw SVG with framer-motion path-length animations (no chart library — recharts is removed)
+- **Icons:** lucide-react
+- **Dev server / HMR:** Vite at `http://localhost:5183`
+- **Hosting:** Vercel (linked to `aplora-ai/ck-marketing-board-briefing`)
 
 ---
 
-## Deliverable
+## Project structure
 
-`CK_Revenue_Intelligence_Briefing.pptx` — 4 slides · 16:9 wide · native PowerPoint (fully editable)
+```
+src/
+├── App.jsx                        7-slide SLIDES array, AnimatePresence between slides
+├── data.js                        Single source of truth: deck metadata, motions, dealTiers,
+│                                  sources, roadmap, seasonality data
+├── index.css                      Brand color CSS variables + slide-stage 16:9 utility
+├── main.jsx
+├── slides/
+│   ├── Slide0.jsx                 Cover (CK logo + Revenue Intelligence headline)
+│   ├── Slide1Unify.jsx            How it works (3-source convergence diagram)
+│   ├── Slide1.jsx                 Live product (dashboard ↔ advisor swap)
+│   ├── Slide2.jsx                 Patterns + Shifts (3 paired beats, all bespoke visuals)
+│   ├── Slide3.jsx                 (legacy; not imported — kept on disk for reference)
+│   ├── Slide4.jsx                 Roadmap (Dynamic Revenue Calendar + 2 cards)
+│   ├── Slide5.jsx                 Engagement (mic-drop sentence)
+│   └── SlideThankYou.jsx          Partnership closer
+├── components/
+│   ├── EyebrowStrap.jsx           Top-of-slide ● LABEL / CRUMB strap
+│   ├── DarkBackdrop / NavyBackdrop / CreamBackdrop in AmbientBackdrop.jsx
+│   ├── StepGate.jsx               Reveals children at step >= N with motion variants
+│   ├── CountUp.jsx                Animated number counter ($7.1M-style strings)
+│   ├── DataSpineChrome.jsx        Persistent left-rail (currently unused, kept for future)
+│   ├── DeckFooter.jsx             PerformanceLabs.AI × Aplora · section · page-of-N
+│   ├── HUD.jsx                    Presenter controls: slide dots, prev/next, restart, fill, help
+│   ├── RevenueIntelligenceDashboard.jsx   Slide 2's HubSpot-style dashboard demo
+│   └── ExecutiveAdvisorChat.jsx           Slide 2's Claude-powered advisor chat
+└── hooks/
+    └── useDeckState.js            Step machine, keyboard nav, slide jump, fill, restart
+```
+
+---
+
+## Step / sub-step mechanics
+
+Each slide declares a `steps` count in `App.jsx` (`steps: N` → 0 to N inclusive, so N+1 reveal states). Inside slides with multi-state cards (Slide 2 Beat 02 and Beat 03), a `SUB_STEPS` array maps clicks to phase changes within the active card. This lets the presenter pause on the *pattern* state, deliver their voice-over, then click to reveal the *shift* state on demand.
+
+Click-driven phases in the current build:
+- Slide 3 Beat 01: pattern → shift (1 click within the beat)
+- Slide 3 Beat 02: pattern → shift (1 click)
+- Slide 3 Beat 03: pattern → shift (1 click)
+
+Auto-advances within slides (no click needed):
+- Slide 1Unify: source pills fade in, lines draw, "One Source of Truth" box materializes (~3s)
+- Slide 0, 5, 6: auto-cascade entries
+- Slide 1 advisor chat: typing animations are time-based once Slide 1 step 1 is reached
+
+---
+
+## Running locally
+
+```bash
+npm install
+npm run dev          # http://localhost:5183
+npm run build        # production bundle (~350 KB JS gzipped)
+npm run preview      # preview the production build
+npm run lint:emdash  # brand check: zero em dashes in src/
+```
+
+### Presenter controls
+
+- `→` / `Space` — next step
+- `←` — previous step
+- `R` — restart current slide
+- `F` — fill current slide (jump to last step)
+- `?` — keyboard help overlay
+- Click any slide dot in the top strip to jump directly
+
+---
+
+## Deployment
+
+Linked to Vercel project `aplora-ai/ck-marketing-board-briefing`. Pushing to `origin/main` auto-deploys to production. Build runtime ~7–9 seconds. Each deployment is immutable — share the URL hash from `vercel ls` for a permalink to a specific version.
+
+Preview build artifacts (gzipped):
+- HTML: ~0.4 KB
+- CSS: ~6 KB
+- JS: ~107 KB (Framer Motion + React + everything else)
+
+---
+
+## Source materials & decisions
+
+- Pivoted from the original `pptxgenjs` PowerPoint deliverable to an interactive web app early in the engagement; the README and slide structure were rebuilt around the new format
+- Middle of the deck went through three structural iterations:
+  1. Two slides (Findings + Shifts) with identical card templates → felt PowerPoint-y
+  2. Two slides with bespoke per-beat visuals → still 9 clicks
+  3. **One merged slide with paired diagnosis→response beats** (current) → 6 clicks, single canvas per beat
+- The `EfficiencyReorderViz` originally inverted tier order on the click (smallest deal jumped to first); replaced with the column-table approach to avoid distracting board questions about the inversion
+- Cadence cards ("How reps spend time" / "How marketing fires") were absorbed into Beat 03's annotation row to tighten the deck
+
+---
+
+## Build notes for future iteration
+
+- All hero headlines fit on one line at 44–56px serif; the `minHeight` on hero wrappers should be ~64–80px (not 120, which crowds the visual area below)
+- SVG visualizations should use `preserveAspectRatio="none"` when the wave/curve is shape-tolerant, with month rulers / labels rendered as separate HTML positioned at calculated x-percentages so typography stays crisp
+- Real client names (Herc Rentals, Country Financial, Wetzels) are wired through the Executive Advisor demo — update both the dashboard's Top Accounts copy AND the advisor's RESPONSE_2_SEGMENTS together if naming changes
+- The 16:9 stage is locked via CSS, so all positioning math is relative to the stage dimensions, not the viewport. The deck looks correct from ~960px viewport up

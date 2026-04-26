@@ -138,7 +138,7 @@ function BeatCard({ beat, index, total, subStep }) {
       </div>
 
       {/* Headline crossfade: pattern -> shift */}
-      <div className="relative" style={{ minHeight: 120 }}>
+      <div className="relative" style={{ minHeight: 64 }}>
         <AnimatePresence mode="wait">
           <motion.h2
             key={inResponse ? 'shift' : 'pattern'}
@@ -163,10 +163,10 @@ function BeatCard({ beat, index, total, subStep }) {
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.65, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mt-2 h-px w-20 origin-left bg-[var(--color-orange)]/50"
+        className="relative mt-3 h-px w-20 origin-left bg-[var(--color-orange)]/50"
       />
 
-      <div className="relative flex-1 mt-6 min-h-0">
+      <div className="relative flex-1 mt-4 min-h-0">
         <Viz inResponse={inResponse} />
       </div>
     </div>
@@ -222,8 +222,8 @@ function MotionsBeatViz({ inResponse }) {
               className="absolute pointer-events-none"
               style={{
                 left: `calc(${blendX}% + 0px)`,
-                top: 24,
-                bottom: 24,
+                top: 32,
+                bottom: 32,
                 width: 0,
                 borderLeft: '1.5px dashed rgba(255,255,255,0.55)',
                 transformOrigin: 'top'
@@ -231,12 +231,18 @@ function MotionsBeatViz({ inResponse }) {
             />
             <motion.div
               key="blend-label"
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.55, delay: 1.0 }}
-              className="absolute text-[11px] uppercase tracking-[0.32em] font-semibold text-white/75 whitespace-nowrap"
-              style={{ left: `${blendX}%`, top: 0, transform: 'translateX(-50%)' }}
+              className="absolute text-[11px] uppercase tracking-[0.32em] font-semibold text-white/85 whitespace-nowrap px-3 py-1 rounded-sm"
+              style={{
+                left: `${blendX}%`,
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: 'var(--color-deck-dark)',
+                border: '1px solid rgba(255,255,255,0.18)'
+              }}
             >
               Blended forecast · {blend} days
             </motion.div>
@@ -342,7 +348,7 @@ function EfficiencyBeatViz({ inResponse }) {
       </div>
 
       {/* Tier rows + 120-day cutoff line in cycle column */}
-      <div className="relative flex-1 min-h-0 flex flex-col justify-around py-1">
+      <div className="relative flex-1 min-h-0 flex flex-col justify-between gap-1 overflow-hidden">
         {dealTiers.map((tier, i) => (
           <TierRow
             key={tier.id}
@@ -398,7 +404,7 @@ function ColumnHeader({ visible, delay, label, accent }) {
 function TierRow({ tier, index, inResponse, sizePct, winPct, cyclePct, cutoffPct, withinCutoff }) {
   return (
     <div
-      className="grid items-center gap-6 py-2 transition-[grid-template-columns] duration-700 ease-out"
+      className="grid items-center gap-6 py-1 transition-[grid-template-columns] duration-700 ease-out"
       style={{
         gridTemplateColumns: inResponse
           ? '46px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.4fr)'
@@ -516,6 +522,8 @@ function RhythmsBeatViz({ inResponse }) {
     v
   }))
   const linePath = catmullRom(points)
+  // Month label x-percentages share the exact coords as the wave's data points
+  const monthXPercents = months.map((_, i) => ((padX + i * stepX) / W) * 100)
 
   // Fire-window positions: 60-90 days before each peak
   const fireXs = [
@@ -527,7 +535,12 @@ function RhythmsBeatViz({ inResponse }) {
 
   return (
     <div className="relative h-full flex flex-col">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet" style={{ flex: 1 }}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full h-full"
+        preserveAspectRatio="none"
+        style={{ flex: 1, minHeight: 0 }}
+      >
         <defs>
           <linearGradient id="beat-wave-fill" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="var(--color-orange)" stopOpacity="0.32" />
@@ -631,14 +644,21 @@ function RhythmsBeatViz({ inResponse }) {
         </AnimatePresence>
       </svg>
 
-      <div className="grid grid-cols-12 px-[3%] mt-2 text-[11px] uppercase tracking-wider font-semibold text-center">
+      {/* Month ruler - HTML labels positioned at the same x percentages as the wave's data points.
+          Kept outside the SVG so text stays crisp regardless of how the wave is stretched. */}
+      <div className="relative h-6 mt-2">
         {months.map((m, i) => (
           <motion.div
-            key={i}
+            key={`m-${i}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.3 + i * 0.04 }}
-            style={{ color: SEASONALITY_PEAKS.includes(i) ? 'var(--color-orange)' : 'rgba(255,255,255,0.4)' }}
+            className="absolute top-0 text-[12px] uppercase tracking-[0.12em] font-bold"
+            style={{
+              left: `${monthXPercents[i]}%`,
+              transform: 'translateX(-50%)',
+              color: SEASONALITY_PEAKS.includes(i) ? 'var(--color-orange)' : 'rgba(255,255,255,0.4)'
+            }}
           >
             {m}
           </motion.div>

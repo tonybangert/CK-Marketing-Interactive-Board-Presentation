@@ -34,13 +34,14 @@ export default function SlideThankYou() {
           }}
         />
 
-        {/* Partner logo lockup */}
-        <div className="mt-12 flex items-center gap-12">
+        {/* Partner logo lockup - equal-width columns force the divider to sit at the
+            true visual center, matching the "Thank you" text above. */}
+        <div className="mt-12 flex items-center w-full max-w-[640px]">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
+            className="flex-1 flex flex-col items-center gap-3"
           >
             <img
               src="/performancelabs.png"
@@ -56,7 +57,7 @@ export default function SlideThankYou() {
             initial={{ scaleY: 0 }}
             animate={{ scaleY: 1 }}
             transition={{ duration: 0.7, delay: 1.7, ease: [0.22, 1, 0.36, 1] }}
-            className="h-[88px] w-px origin-center"
+            className="h-[88px] w-px origin-center mx-8 shrink-0"
             style={{ background: 'linear-gradient(180deg, transparent, var(--color-orange), transparent)' }}
           />
 
@@ -64,7 +65,7 @@ export default function SlideThankYou() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 1.55, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-3"
+            className="flex-1 flex flex-col items-center gap-3"
           >
             <img
               src="/aplora.png"
