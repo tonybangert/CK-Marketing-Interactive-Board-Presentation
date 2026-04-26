@@ -89,6 +89,17 @@ export const cadenceDetail = {
   ]
 }
 
+// Slides 2 & 3 - shared deal tier data. Finding 02 ranks tiers by size; Shift 02
+// re-ranks the same tiers by composite score (smaller deals can climb).
+// `size` is the headline label; `score` is the composite ranking value.
+export const dealTiers = [
+  { id: 'T1', sizeLabel: '$1.2M', size: 1200, score: 38, label: 'Mid-market enterprise' },
+  { id: 'T2', sizeLabel: '$680K', size: 680,  score: 52, label: 'Enterprise renewal' },
+  { id: 'T3', sizeLabel: '$340K', size: 340,  score: 71, label: 'Strategic expansion' },
+  { id: 'T4', sizeLabel: '$140K', size: 140,  score: 88, label: 'Multi-loc growth' },
+  { id: 'T5', sizeLabel: '$48K',  size: 48,   score: 96, label: 'High-velocity' }
+]
+
 // Slide 4 - two-card roadmap (sample's framing).
 export const roadmap = [
   {
