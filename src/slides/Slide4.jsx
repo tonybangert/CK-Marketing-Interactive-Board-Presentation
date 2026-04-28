@@ -76,7 +76,10 @@ export default function Slide4({ step }) {
       <div className="relative z-10 h-full flex flex-col px-12 pt-28 pb-14">
         <StepGate show={0} step={step}>
           <h1 className="font-serif text-[56px] leading-[1.04] text-white">
-            From insight to action.
+            From insight to action.{' '}
+            <span className="italic text-[var(--color-orange)] text-[32px] align-baseline">
+              (Phase II)
+            </span>
           </h1>
         </StepGate>
 
