@@ -27,7 +27,7 @@ The deck argues a single thesis in four moves: **the data is unified, the produc
 | 2 | How it works | `Three systems, one source of truth.` | Animated convergence diagram: HubSpot · Finance · Sales Data → "One Source of Truth" box, lines drawing in over 3 seconds |
 | 3 | Live product | `Live now.` | Real product proof: HubSpot dashboard demo (pipeline by stage, monthly revenue trend) → click → Executive Advisor chat with two named-account Q&A turns powered by Claude |
 | 4 | Patterns + Shifts | `Three patterns. Three operational shifts.` | The argument's center of gravity. Three paired diagnosis→response beats, one click reveals each pattern, second click transforms it into the operational response on the same canvas |
-| 5 | Roadmap | `From insight to deployment.` | Interactive Dynamic Revenue Calendar showing buying-window peaks across both motions + two-card roadmap (Market Intelligence / Rep Specialization) |
+| 5 | Roadmap | `From insight to action.` | Interactive Dynamic Revenue Calendar showing buying-window peaks across both motions + two-card roadmap (Market Intelligence / Rep Specialization) |
 | 6 | Engagement | (mic-drop sentence) | "The revenue target doesn't change. The confidence in hitting it does." Single-sentence resting state |
 | 7 | Thank you | `Thank you.` | Partnership closer with PerformanceLabs.AI + Aplora.AI lockup |
 

@@ -71,12 +71,12 @@ export default function Slide4({ step }) {
     <div className="absolute inset-0 text-white overflow-hidden">
       <DarkBackdrop />
 
-      <EyebrowStrap label="Roadmap" crumb="From insight to deployment" />
+      <EyebrowStrap label="Roadmap" crumb="From insight to action" />
 
       <div className="relative z-10 h-full flex flex-col px-12 pt-28 pb-14">
         <StepGate show={0} step={step}>
           <h1 className="font-serif text-[56px] leading-[1.04] text-white">
-            From insight to deployment.
+            From insight to action.
           </h1>
         </StepGate>
 
