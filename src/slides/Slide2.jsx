@@ -197,7 +197,7 @@ function MotionsBeatViz({ inResponse }) {
         delay={0.0}
         color="var(--color-concord-soft)"
         inResponse={inResponse}
-        traits={['Larger buying committee', 'Higher deal value', 'Solution complexity & customization']}
+        traits={['Larger buying committee', 'Solution complexity & customization', 'Higher deal value']}
       />
       <ScorecardBar
         label="Multi-Location"
@@ -206,7 +206,7 @@ function MotionsBeatViz({ inResponse }) {
         delay={0.15}
         color="var(--color-ck-green-soft)"
         inResponse={inResponse}
-        traits={['Single buyer or small committee', 'Lower price point', 'Self-evident value']}
+        traits={['Single buyer or small committee', 'Self-evident value', 'Lower deal value']}
       />
 
       {/* Blended forecast line - present in diagnosis, dissolves on response */}
