@@ -182,21 +182,12 @@ export default function Slide4({ step }) {
           </div>
         </StepGate>
 
-        {/* Two roadmap cards: Market Intelligence (the calendar's narrative half) + Rep Specialization */}
-        <div className="mt-6 grid grid-cols-2 gap-5">
-          {roadmap.map((card, i) => (
-            <StepGate key={card.label} show={i + 2} step={step} variant="up" className="h-full">
-              <RoadmapCard card={card} />
-            </StepGate>
-          ))}
-        </div>
-
-        {/* Bottom strap */}
-        <StepGate show={3} step={step} variant="fade" delay={0.4} className="mt-auto">
-          <div className="pt-5 mt-5 border-t border-white/10 flex items-center justify-between text-[12px]">
-            <div className="text-white">
+        {/* Mid strap: sits between the buying-window calendar and the roadmap cards */}
+        <StepGate show={2} step={step} variant="fade" delay={0.2}>
+          <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+            <div className="font-serif text-[18px] leading-[1.2] text-white">
               The right rep, on the right deal,{' '}
-              <span className="text-[var(--color-orange)]">at the right time.</span>
+              <span className="text-[var(--color-orange)] italic">at the right time.</span>
             </div>
             <div className="flex items-center gap-2.5 text-[11px] uppercase tracking-[0.28em] text-white/55">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-orange)]" />
@@ -204,6 +195,15 @@ export default function Slide4({ step }) {
             </div>
           </div>
         </StepGate>
+
+        {/* Two roadmap cards: Market Intelligence (the calendar's narrative half) + Rep Specialization */}
+        <div className="mt-4 grid grid-cols-2 gap-5 flex-1 min-h-0">
+          {roadmap.map((card, i) => (
+            <StepGate key={card.label} show={i + 2} step={step} variant="up" className="h-full">
+              <RoadmapCard card={card} />
+            </StepGate>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -211,16 +211,16 @@ export default function Slide4({ step }) {
 
 function RoadmapCard({ card }) {
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-sm p-6">
-      <div className="flex items-center gap-2.5 text-[10px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold">
+    <div className="h-full bg-white/[0.03] border border-white/10 rounded-sm px-6 py-5 flex flex-col">
+      <div className="flex items-center gap-2.5 text-[11px] uppercase tracking-[0.32em] text-[var(--color-orange)] font-semibold">
         <span className="inline-block h-1.5 w-1.5 bg-[var(--color-orange)]" />
         <span>{card.label}</span>
       </div>
-      <h3 className="font-serif text-[28px] leading-[1.1] text-white mt-3">
+      <h3 className="font-serif text-[28px] leading-[1.15] text-white mt-3">
         {card.question}
       </h3>
       <div className="mt-3 h-px w-full bg-white/10" />
-      <p className="mt-3 text-[13px] leading-[1.55] text-white/60">
+      <p className="mt-3 text-[15px] leading-[1.55] text-white/75">
         {card.body}
       </p>
     </div>
