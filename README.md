@@ -42,7 +42,9 @@ The deck's load-bearing slide. Six clicks across three beats; each beat shows th
 **Beat 01 — Two motions, one blended forecast → Each motion gets its own scorecard**
 - Two horizontal cycle bars (Corporate Store · 203 days · concord blue, Multi-Location · 80 days · CK green)
 - Pattern: a dashed white "Blended forecast · 142 days" line cuts between them
-- Shift (click): blended line dissolves; each bar gains motion-specific scorecard metrics (Win rate / Cycle / Expansion) inline
+- Shift (click): blended line dissolves; each bar gains a motion-specific trait list (accent dot + phrase, three columns) that contrasts how each motion actually sells:
+  - Corporate Store: Larger buying committee · Higher deal value · Solution complexity & customization
+  - Multi-Location: Single buyer or small committee · Lower price point · Self-evident value
 
 **Beat 02 — Deal size alone is one dimension → Win rate and speed to close shape the year**
 - Five tier rows (T1–T5, $1.2M → $48K) ordered by deal size

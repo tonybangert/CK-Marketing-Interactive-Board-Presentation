@@ -197,7 +197,7 @@ function MotionsBeatViz({ inResponse }) {
         delay={0.0}
         color="var(--color-concord-soft)"
         inResponse={inResponse}
-        metrics={[80, 65, 72]}
+        traits={['Larger buying committee', 'Higher deal value', 'Solution complexity & customization']}
       />
       <ScorecardBar
         label="Multi-Location"
@@ -206,7 +206,7 @@ function MotionsBeatViz({ inResponse }) {
         delay={0.15}
         color="var(--color-ck-green-soft)"
         inResponse={inResponse}
-        metrics={[58, 88, 70]}
+        traits={['Single buyer or small committee', 'Lower price point', 'Self-evident value']}
       />
 
       {/* Blended forecast line - present in diagnosis, dissolves on response */}
@@ -255,7 +255,7 @@ function MotionsBeatViz({ inResponse }) {
   )
 }
 
-function ScorecardBar({ label, days, widthPct, delay, color, inResponse, metrics }) {
+function ScorecardBar({ label, days, widthPct, delay, color, inResponse, traits }) {
   return (
     <div className="relative">
       <div className="flex items-baseline justify-between mb-2">
@@ -291,25 +291,21 @@ function ScorecardBar({ label, days, widthPct, delay, color, inResponse, metrics
               className="overflow-hidden"
             >
               <div className="mt-3 grid grid-cols-3 gap-4">
-                {['Win rate', 'Cycle', 'Expansion'].map((m, i) => (
+                {traits.map((t, i) => (
                   <motion.div
-                    key={m}
+                    key={t}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.45, delay: 0.2 + i * 0.08 }}
-                    className="flex items-center gap-2"
+                    className="flex items-start gap-2"
                   >
-                    <div className="text-[9px] uppercase tracking-[0.18em] text-white/45 font-semibold w-16">{m}</div>
-                    <div className="flex-1 h-1.5 bg-black/30 rounded-sm overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${metrics[i]}%` }}
-                        transition={{ duration: 0.6, delay: 0.3 + i * 0.08 }}
-                        className="h-full"
-                        style={{ background: color }}
-                      />
+                    <span
+                      className="mt-[7px] inline-block h-1.5 w-1.5 rounded-full shrink-0"
+                      style={{ background: color }}
+                    />
+                    <div className="text-[12px] leading-snug text-white/85 font-semibold tracking-[0.04em]">
+                      {t}
                     </div>
-                    <div className="text-[10px] text-white/65 w-6 text-right font-mono">{metrics[i]}</div>
                   </motion.div>
                 ))}
               </div>
